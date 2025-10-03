@@ -9,22 +9,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --dark-bg: #02040a;
-            --primary-text: #f0f8ff;
-            --secondary-text: #88ddff;
-            --accent: #00f6ff;
-            --accent-glow: rgba(0, 246, 255, 0.4);
-            --card-bg: rgba(0, 100, 150, 0.05);
-            --border-color: rgba(0, 246, 255, 0.2);
+            --light-bg: #f4f7fa;
+            --primary-text: #1a202c;
+            --secondary-text: #4a5568;
+            --accent: #007bff;
+            --accent-glow: rgba(0, 123, 255, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --border-color: rgba(0, 0, 0, 0.1);
         }
         html {
             scroll-behavior: smooth;
         }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--dark-bg);
+            background-color: var(--light-bg);
             color: var(--primary-text);
             overflow-x: hidden;
+            position: relative;
         }
         #bg-canvas {
             position: fixed;
@@ -40,7 +41,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: var(--dark-bg);
+            background-color: var(--light-bg);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -98,7 +99,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(5, 8, 10, 0.98);
+            background-color: rgba(244, 247, 250, 0.98);
             backdrop-filter: blur(10px);
             z-index: 100;
             overflow-y: auto;
@@ -215,7 +216,7 @@
             margin-bottom: 2rem;
         }
         .project-tags span {
-            background-color: var(--card-bg);
+            background-color: var(--light-bg);
             border: 1px solid var(--border-color);
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
@@ -228,9 +229,9 @@
              border-color: var(--accent);
         }
         .project-btn {
-            background-color: transparent;
-            color: var(--primary-text);
-            border: 2px solid var(--border-color);
+            background-color: var(--accent);
+            color: white;
+            border: 2px solid var(--accent);
             padding: 0.75rem 1.5rem;
             border-radius: 9999px;
             font-weight: 700;
@@ -238,10 +239,9 @@
             letter-spacing: 0.1em;
             transition: all 0.3s ease;
         }
-        .project-item:hover .project-btn {
-            background-color: var(--accent);
-            border-color: var(--accent);
-            color: white;
+        .project-item:hover .project-btn, .project-btn:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px var(--accent-glow);
         }
@@ -265,7 +265,7 @@
             color: var(--primary-text);
         }
         .tab-btn.active {
-            color: var(--primary-text);
+            color: var(--accent);
             border-bottom-color: var(--accent);
         }
         .tab-content {
@@ -282,7 +282,7 @@
         .timeline-item.visible { opacity: 1; transform: translateY(0); }
         .timeline-item:nth-child(odd) { left: 0; }
         .timeline-item:nth-child(even) { left: 50%; }
-        .timeline-item::after { content: ''; position: absolute; width: 20px; height: 20px; right: -10px; background-color: var(--dark-bg); border: 4px solid var(--accent); top: 15px; border-radius: 50%; z-index: 1; }
+        .timeline-item::after { content: ''; position: absolute; width: 20px; height: 20px; right: -10px; background-color: var(--light-bg); border: 4px solid var(--accent); top: 15px; border-radius: 50%; z-index: 1; }
         .timeline-item:nth-child(even)::after { left: -10px; }
         .timeline-content { padding: 20px 30px; background-color: var(--card-bg); border: 1px solid var(--border-color); position: relative; border-radius: 8px; transition: all 0.3s ease; }
         .timeline-item:hover .timeline-content { transform: scale(1.03); border-color: var(--accent); box-shadow: 0 0 25px var(--accent-glow); }
@@ -312,16 +312,155 @@
             border-color: var(--accent);
             color: white;
         }
+
+        /* --- AI Interview Modal Styles --- */
+        .ai-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .ai-modal.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .ai-chat-container {
+            background-color: white;
+            border-radius: 0.75rem;
+            width: 90%;
+            max-width: 700px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .ai-chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .ai-chat-history {
+            flex-grow: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .chat-bubble {
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            max-width: 80%;
+            line-height: 1.5;
+        }
+        .user-bubble {
+            background-color: var(--accent);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.25rem;
+        }
+        .ai-bubble {
+            background-color: #e9ecef;
+            color: var(--primary-text);
+            align-self: flex-start;
+            border-bottom-left-radius: 0.25rem;
+        }
+        .ai-bubble.loading {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .dot-flashing {
+            position: relative;
+            width: 6px; height: 6px;
+            border-radius: 5px;
+            background-color: var(--secondary-text);
+            color: var(--secondary-text);
+            animation: dotFlashing 1s infinite linear alternate;
+            animation-delay: .5s;
+        }
+        .dot-flashing::before, .dot-flashing::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            top: 0;
+        }
+        .dot-flashing::before {
+            left: -10px;
+            width: 6px; height: 6px;
+            border-radius: 5px;
+            background-color: var(--secondary-text);
+            color: var(--secondary-text);
+            animation: dotFlashing 1s infinite alternate;
+            animation-delay: 0s;
+        }
+        .dot-flashing::after {
+            left: 10px;
+            width: 6px; height: 6px;
+            border-radius: 5px;
+            background-color: var(--secondary-text);
+            color: var(--secondary-text);
+            animation: dotFlashing 1s infinite alternate;
+            animation-delay: 1s;
+        }
+        @keyframes dotFlashing {
+            0% { background-color: var(--secondary-text); }
+            50%, 100% { background-color: #d1d5db; }
+        }
+
+        .ai-chat-form {
+            border-top: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .ai-chat-input {
+            flex-grow: 1;
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            padding: 0.75rem 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .ai-chat-input:focus {
+            border-color: var(--accent);
+        }
+        .ai-chat-send {
+            background-color: var(--accent);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .ai-chat-send:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body class="antialiased">
-
     <canvas id="bg-canvas"></canvas>
 
     <!-- Loader -->
     <div id="loader" class="loader">
-        <div class="text-white text-center">
-            <div class="w-16 h-16 border-4 border-t-transparent border-white rounded-full animate-spin mx-auto"></div>
+        <div class="text-black text-center">
+            <div class="w-16 h-16 border-4 border-t-transparent border-gray-800 rounded-full animate-spin mx-auto"></div>
             <p class="mt-4 tracking-widest">LOADING</p>
         </div>
     </div>
@@ -342,12 +481,12 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 </button>
             </div>
-            <div id="mobile-menu" class="hidden md:hidden bg-black bg-opacity-90">
-                <a href="#about" class="block py-3 px-6 text-center uppercase tracking-widest">About</a>
-                <a href="#timeline" class="block py-3 px-6 text-center uppercase tracking-widest">Experience</a>
-                <a href="#skills" class="block py-3 px-6 text-center uppercase tracking-widest">Skills</a>
-                <a href="#works" class="block py-3 px-6 text-center uppercase tracking-widest">Projects</a>
-                <a href="#contact" class="block py-3 px-6 text-center uppercase tracking-widest">Contact</a>
+            <div id="mobile-menu" class="hidden md:hidden bg-white bg-opacity-95">
+                <a href="#about" class="block py-3 px-6 text-center uppercase tracking-widest text-gray-700">About</a>
+                <a href="#timeline" class="block py-3 px-6 text-center uppercase tracking-widest text-gray-700">Experience</a>
+                <a href="#skills" class="block py-3 px-6 text-center uppercase tracking-widest text-gray-700">Skills</a>
+                <a href="#works" class="block py-3 px-6 text-center uppercase tracking-widest text-gray-700">Projects</a>
+                <a href="#contact" class="block py-3 px-6 text-center uppercase tracking-widest text-gray-700">Contact</a>
             </div>
         </header>
 
@@ -355,7 +494,7 @@
         <section class="hero flex items-center justify-center text-center">
             <div class="z-10 max-w-4xl mx-auto px-4">
                 <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold uppercase tracking-widest leading-tight">Jackson Mathew</h1>
-                <p class="mt-6 text-xl md:text-2xl text-gray-300">Product Manager specializing in <span class="text-white">AI-Driven Transformation</span>, <span class="text-white">Operational Excellence</span>, and <span class="text-white">Data-Informed Strategy</span>.</p>
+                <p class="mt-6 text-xl md:text-2xl text-gray-700">Product Manager specializing in <span class="text-black">AI-Driven Transformation</span>, <span class="text-black">Operational Excellence</span>, and <span class="text-black">Data-Informed Strategy</span>.</p>
                 <a href="#works" class="mt-12 inline-block project-btn font-bold py-4 px-10 rounded-full uppercase tracking-widest">View My Work</a>
             </div>
         </section>
@@ -365,10 +504,10 @@
             <section id="about" class="section my-20" data-animation="about">
                  <div class="max-w-4xl mx-auto text-center">
                     <h2 class="text-3xl font-bold mb-6 uppercase tracking-widest">About Me</h2>
-                    <div class="text-gray-300 leading-relaxed space-y-4 text-lg">
+                    <div class="text-gray-600 leading-relaxed space-y-4 text-lg">
                         <p>I'm a product manager with a strong foundation in strategy, innovation, and technology-driven transformation. I bring over six years of experience in project management, digital operations, and business analysis across the energy, tech, and consulting sectors.</p>
                         <p>My philosophy is rooted in a simple principle: create value by solving real problems. I believe the best products emerge from a deep understanding of user needs, validated by data, and brought to life through seamless cross-functional collaboration. I thrive on translating complex business challenges into elegant, scalable solutions that drive measurable impact.</p>
-                        <p>I specialize in aligning product strategy with commercial goals, leading high-impact projects from ideation to launch, and embedding a culture of continuous improvement within teams.</p>
+                        <p>I specialize in aligning product strategy with commercial goals, leading high-impact projects from ideation to launch, and embedding a culture of continuous improvement. My leadership style is centered on empowerment and transparency; I believe in giving teams the autonomy to innovate while ensuring everyone is aligned on the 'why' behind our work. I'm passionate about mentoring and fostering an environment where curiosity and constructive feedback are core values.</p>
                     </div>
                 </div>
             </section>
@@ -377,11 +516,11 @@
             <section id="timeline" class="section my-20" data-animation="timeline">
                 <h2 class="text-3xl font-bold text-center mb-12 uppercase tracking-widest">Professional Journey</h2>
                 <div class="timeline-container">
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Project Manager</h3><p class="text-gray-400 text-sm mb-3">Blackmont Consulting | Sept 2025 – Present</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Lead cross-functional teams to deliver technology-driven strategy projects for enterprise clients.</li><li>Manage project lifecycle, from scope definition and planning to execution, risk management, and delivery.</li><li>Serve as the primary liaison between client stakeholders and technical teams to ensure alignment and clear communication.</li><li>Develop strategic roadmaps and implement solutions that drive digital transformation and competitive advantage.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Project Manager & Business Analyst</h3><p class="text-gray-400 text-sm mb-3">Leading IT Solutions Provider | Mar 2024 – July 2024</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Improved reporting accuracy by 30% for a medical device app.</li><li>Reduced project timelines by 20% through clear documentation.</li><li>Enhanced team efficiency by 15% via KPI monitoring.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Freelance Consultant</h3><p class="text-gray-400 text-sm mb-3">Self-Employed | Jun 2023 – Jan 2024</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Achieved customer retention rates above 90%.</li><li>Drove a 25% revenue increase with data-driven process improvements.</li><li>Improved operational efficiency via platform integration.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Analyst – Business Optimization</h3><p class="text-gray-400 text-sm mb-3">Multinational Energy Firm | Jan 2019 - May 2023</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Increased annual revenue by $150K through process improvements.</li><li>Identified $300K in savings via optimized resource management.</li><li>Streamlined material tracking to significantly reduce costs.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Associate Consultant</h3><p class="text-gray-400 text-sm mb-3">Management Consulting Firm | Jun 2017 – Sept 2018</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Proposed $3M in cost-saving strategies for clients.</li><li>Saved $200K annually by implementing Lean Six Sigma.</li><li>Reduced client onboarding time by 30%.</li></ul></div></div>
+                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Project Manager</h3><p class="text-gray-500 text-sm mb-3">Blackmont Consulting | Sept 2025 – Present</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Lead cross-functional teams to deliver technology-driven strategy projects for enterprise clients.</li><li>Manage project lifecycle, from scope definition and planning to execution, risk management, and delivery.</li><li>Serve as the primary liaison between client stakeholders and technical teams to ensure alignment and clear communication.</li><li>Develop strategic roadmaps and implement solutions that drive digital transformation and competitive advantage.</li></ul></div></div>
+                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Project Manager & Business Analyst</h3><p class="text-gray-500 text-sm mb-3">Leading IT Solutions Provider | Mar 2024 – July 2024</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Improved reporting accuracy by 30% for a medical device app.</li><li>Reduced project timelines by 20% through clear documentation.</li><li>Enhanced team efficiency by 15% via KPI monitoring.</li></ul></div></div>
+                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Freelance Consultant</h3><p class="text-gray-500 text-sm mb-3">Self-Employed | Jun 2023 – Jan 2024</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Achieved customer retention rates above 90%.</li><li>Drove a 25% revenue increase with data-driven process improvements.</li><li>Improved operational efficiency via platform integration.</li></ul></div></div>
+                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Analyst – Business Optimization</h3><p class="text-gray-500 text-sm mb-3">Multinational Energy Firm | Jan 2019 - May 2023</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Increased annual revenue by $150K through process improvements.</li><li>Identified $300K in savings via optimized resource management.</li><li>Streamlined material tracking to significantly reduce costs.</li></ul></div></div>
+                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Associate Consultant</h3><p class="text-gray-500 text-sm mb-3">Management Consulting Firm | Jun 2017 – Sept 2018</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Proposed $3M in cost-saving strategies for clients.</li><li>Saved $200K annually by implementing Lean Six Sigma.</li><li>Reduced client onboarding time by 30%.</li></ul></div></div>
                 </div>
             </section>
             
@@ -389,12 +528,12 @@
             <section id="skills" class="section my-20" data-animation="skills">
                 <h2 class="text-3xl font-bold text-center mb-12 uppercase tracking-widest">Core Competencies</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg><h3 class="text-xl font-bold">Product Management</h3></div><div class="skill-details text-gray-400 text-sm space-y-2"><p>• Product Roadmapping & Prioritization</p><p>• Go-To-Market Strategy</p><p>• Agile/Lean Methodologies</p><p>• User Research & Personas</p><p>• Wireframing & Prototyping</p><p>• Product Metrics & KPIs</p><p>• Cross-Functional Collaboration</p><p>• Customer Journey Mapping</p></div></div>
-                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg><h3 class="text-xl font-bold">Project Management</h3></div><div class="skill-details text-gray-400 text-sm space-y-2"><p>• Agile / Scrum / Kanban / Waterfall</p><p>• Scope, Time & Budget Management</p><p>• Risk & Issue Management</p><p>• Stakeholder Communication</p><p>• Milestone Tracking & Gantt Charts</p><p>• Resource Allocation</p><p>• Sprint Planning & Retrospectives</p><p>• RAID Logs / RACI Matrix</p></div></div>
-                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg><h3 class="text-xl font-bold">Operational Excellence</h3></div><div class="skill-details text-gray-400 text-sm space-y-2"><p>• Lean Principles & Waste Reduction</p><p>• Six Sigma / Quality Management</p><p>• Process Optimization</p><p>• Continuous Improvement Culture</p><p>• KPI Monitoring</p><p>• Change Management & Adoption</p><p>• Operational Risk Management</p></div></div>
-                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg><h3 class="text-xl font-bold">Business Analysis</h3></div><div class="skill-details text-gray-400 text-sm space-y-2"><p>• Requirements Gathering</p><p>• Process Mapping (BPMN, SIPOC)</p><p>• Gap Analysis & Root Cause Analysis</p><p>• Functional & Non-Functional Specs</p><p>• Business Case Development & ROI</p><p>• Stakeholder Interviews</p><p>• Use Case / Acceptance Criteria</p><p>• Impact Analysis</p></div></div>
-                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg><h3 class="text-xl font-bold">Data Analysis</h3></div><div class="skill-details text-gray-400 text-sm space-y-2"><p>• Data Wrangling (Excel, SQL, R)</p><p>• Descriptive & Diagnostic Analytics</p><p>• A/B Testing & Experimentation</p><p>• Funnel Analysis & User Behavior</p><p>• Dashboard Creation (Power BI, Tableau)</p><p>• Forecasting & Trend Analysis</p><p>• Metrics Definition (LTV, CAC)</p><p>• Data-Driven Storytelling</p></div></div>
-                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg><h3 class="text-xl font-bold">Corporate Strategy</h3></div><div class="skill-details text-gray-400 text-sm space-y-2"><p>• Strategic Planning</p><p>• M&A and Strategic Partnerships</p><p>• Market & Competitive Analysis</p><p>• Portfolio Management</p><p>• Corporate Governance & ESG</p><p>• Digital & Innovation Strategy</p><p>• Product Vision & Roadmapping</p><p>• Competitive Positioning</p></div></div>
+                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg><h3 class="text-xl font-bold">Product Management</h3></div><div class="skill-details text-gray-500 text-sm space-y-2"><p>• Product Roadmapping & Prioritization</p><p>• Go-To-Market Strategy</p><p>• Agile/Lean Methodologies</p><p>• User Research & Personas</p><p>• Wireframing & Prototyping</p><p>• Product Metrics & KPIs</p><p>• Cross-Functional Collaboration</p><p>• Customer Journey Mapping</p></div></div>
+                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg><h3 class="text-xl font-bold">Project Management</h3></div><div class="skill-details text-gray-500 text-sm space-y-2"><p>• Agile / Scrum / Kanban / Waterfall</p><p>• Scope, Time & Budget Management</p><p>• Risk & Issue Management</p><p>• Stakeholder Communication</p><p>• Milestone Tracking & Gantt Charts</p><p>• Resource Allocation</p><p>• Sprint Planning & Retrospectives</p><p>• RAID Logs / RACI Matrix</p></div></div>
+                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg><h3 class="text-xl font-bold">Operational Excellence</h3></div><div class="skill-details text-gray-500 text-sm space-y-2"><p>• Lean Principles & Waste Reduction</p><p>• Six Sigma / Quality Management</p><p>• Process Optimization</p><p>• Continuous Improvement Culture</p><p>• KPI Monitoring</p><p>• Change Management & Adoption</p><p>• Operational Risk Management</p></div></div>
+                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg><h3 class="text-xl font-bold">Business Analysis</h3></div><div class="skill-details text-gray-500 text-sm space-y-2"><p>• Requirements Gathering</p><p>• Process Mapping (BPMN, SIPOC)</p><p>• Gap Analysis & Root Cause Analysis</p><p>• Functional & Non-Functional Specs</p><p>• Business Case Development & ROI</p><p>• Stakeholder Interviews</p><p>• Use Case / Acceptance Criteria</p><p>• Impact Analysis</p></div></div>
+                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg><h3 class="text-xl font-bold">Data Analysis</h3></div><div class="skill-details text-gray-500 text-sm space-y-2"><p>• Data Wrangling (Excel, SQL, R)</p><p>• Descriptive & Diagnostic Analytics</p><p>• A/B Testing & Experimentation</p><p>• Funnel Analysis & User Behavior</p><p>• Dashboard Creation (Power BI, Tableau)</p><p>• Forecasting & Trend Analysis</p><p>• Metrics Definition (LTV, CAC)</p><p>• Data-Driven Storytelling</p></div></div>
+                    <div class="skill-card rounded-lg p-6"><div class="flex items-center"><svg class="skill-icon mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg><h3 class="text-xl font-bold">Corporate Strategy</h3></div><div class="skill-details text-gray-500 text-sm space-y-2"><p>• Strategic Planning</p><p>• M&A and Strategic Partnerships</p><p>• Market & Competitive Analysis</p><p>• Portfolio Management</p><p>• Corporate Governance & ESG</p><p>• Digital & Innovation Strategy</p><p>• Product Vision & Roadmapping</p><p>• Competitive Positioning</p></div></div>
                 </div>
             </section>
 
@@ -416,38 +555,38 @@
                     <div id="pm" class="tab-content active">
                         <div class="space-y-24 md:space-y-32">
                             <div class="project-item" data-project="pm-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=MedTech+Platform+UI" alt="Medical Device App Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Predictive+Analytics+Dashboard" alt="Medical Device App Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">AI in Healthcare</p>
                                     <h3 class="project-title">Medical Device Management App</h3>
-                                    <p class="project-summary">Led a 15+ member team to architect and launch a critical enterprise application. We leveraged predictive analytics to boost reporting accuracy by 30% and streamlined workflows, reducing project timelines by 20%.</p>
+                                    <p class="project-summary">Architected and launched a critical enterprise application for a leading medical device manufacturer. By implementing predictive analytics and redesigning core workflows, we boosted reporting accuracy by 30%, reduced project timelines by 20%, and significantly improved the daily experience for field technicians.</p>
                                     <div class="project-tags"><span>Product Strategy</span><span>Agile</span><span>PowerBI</span><span>Jira</span></div>
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="pm-2">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Google+Search+UX" alt="Google Search UX Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=AI-Powered+Search+Results" alt="Google Search UX Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">Search & Accessibility</p>
                                     <h3 class="project-title">Google Search Experience Enhancement</h3>
-                                    <p class="project-summary">A strategic proposal to enhance Google Search by improving accessibility for visually impaired users, increasing result accuracy for technical queries, and combating misinformation for students through AI-powered summaries.</p>
+                                    <p class="project-summary">Authored a product strategy proposal to enhance Google Search, focusing on accessibility for visually impaired users, improving result accuracy for technical queries, and combating misinformation for students with AI-powered summaries.</p>
                                     <div class="project-tags"><span>Product Strategy</span><span>UX Research</span><span>Accessibility</span><span>AI/Bard</span></div>
                                 </div>
                             </div>
                             <div class="project-item" data-project="pm-3">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=LinkedIn+Optimizer+UI" alt="LinkedIn Optimizer UI Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=LinkedIn+Profile+Analysis+UI" alt="LinkedIn Optimizer UI Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">Professional Networking & AI</p>
                                     <h3 class="project-title">AI-Powered LinkedIn Profile Optimizer</h3>
-                                    <p class="project-summary">Designed a product concept for an AI tool that analyzes LinkedIn profiles, provides actionable feedback, and suggests keyword optimizations to help users attract more opportunities and match with relevant jobs.</p>
+                                    <p class="project-summary">Designed an innovative product concept for an AI tool that analyzes LinkedIn profiles to provide actionable feedback, suggest keyword optimizations, and help users attract more relevant job opportunities.</p>
                                     <div class="project-tags"><span>Product Design</span><span>AI</span><span>Figma</span><span>User Experience</span></div>
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="pm-4">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Myntra+Onboarding+Flow" alt="Myntra Onboarding Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Gamified+Onboarding+Flow" alt="Myntra Onboarding Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">E-commerce & User Onboarding</p>
                                     <h3 class="project-title">Myntra Onboarding Experience Redesign</h3>
-                                    <p class="project-summary">Analyzed the new user journey for a major e-commerce platform, identifying key friction points. Proposed a redesigned onboarding flow featuring enhanced personalization, gamification, and a virtual try-on feature to boost engagement and conversion.</p>
+                                    <p class="project-summary">Analyzed and redesigned the new user journey for a major e-commerce platform. Identified key friction points and proposed a new flow featuring enhanced personalization, gamification, and a virtual try-on feature to boost conversion and engagement.</p>
                                     <div class="project-tags"><span>User Onboarding</span><span>E-commerce</span><span>UX/UI</span><span>Gamification</span></div>
                                 </div>
                             </div>
@@ -457,47 +596,47 @@
                     <div id="be" class="tab-content">
                          <div class="space-y-24 md:space-y-32">
                              <div class="project-item" data-project="be-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=IoT+Sensor+Dashboard" alt="IoT Sensor Dashboard for Temperature Monitoring" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Real-time+IoT+Sensor+Dashboard" alt="IoT Sensor Dashboard for Temperature Monitoring" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">IoT-Based Automated Climate Monitoring</h3>
-                                    <p class="project-summary">Replaced a manual, time-consuming climate logging process with an automated IoT sensor solution. This eliminated 2.5 hours of daily labor, provided real-time alerts to prevent spoilage, and ensured 100% compliance with quality control standards.</p>
+                                    <p class="project-summary">Spearheaded the replacement of a manual, time-consuming climate logging process with an automated IoT sensor solution. This initiative eliminated 2.5 hours of daily labor, provided real-time alerts to prevent spoilage, and ensured 100% compliance with quality control standards.</p>
                                     <div class="project-tags"><span>IoT Implementation</span><span>Process Automation</span><span>Cost Savings</span><span>Quality Control</span></div>
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="be-2">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Forklift+Utilization+Pareto" alt="Forklift Utilization Pareto Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Fleet+Utilization+Cost+Analysis" alt="Forklift Utilization Pareto Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Forklift Fleet Optimization Strategy</h3>
-                                    <p class="project-summary">Conducted a fleet-wide analysis that revealed chronic underutilization (56% avg.) and excessive maintenance costs for aging equipment. My data-driven recommendation to scrap 4 high-cost forklifts and optimize the hire/own mix led to a projected annual savings of over $172K.</p>
+                                    <p class="project-summary">Conducted a fleet-wide analysis that revealed chronic underutilization and excessive maintenance costs. My data-driven recommendation to adjust the hire/own mix and retire 4 high-cost forklifts led to projected annual savings of over $172K.</p>
                                     <div class="project-tags"><span>Asset Management</span><span>Cost-Benefit Analysis</span><span>Operational Efficiency</span><span>Data Analysis</span></div>
                                 </div>
                             </div>
                              <div class="project-item" data-project="be-3">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Welder+Performance+Chart" alt="Welder Performance Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Welder+NDT+Rejection+Rate+Analysis" alt="Welder Performance Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Welder Performance & Quality Improvement</h3>
-                                    <p class="project-summary">Led a Lean Six Sigma project to address critical delays in the weld-to-inspection cycle. Through Root Cause Analysis (RCA), I identified that reallocating non-welding tasks would yield $20K/month in savings and that targeted training could significantly reduce a high 18% NDT rejection rate.</p>
+                                    <p class="project-summary">Led a Lean Six Sigma project to address critical production delays. Through Root Cause Analysis (RCA), I identified that reallocating non-welding tasks would yield $20K/month in savings and that targeted training could significantly reduce a high 18% NDT rejection rate.</p>
                                     <div class="project-tags"><span>Lean Six Sigma</span><span>Root Cause Analysis</span><span>Quality Improvement</span><span>Productivity</span></div>
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="be-4">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Scrap+Metal+Value+Comparison" alt="Scrap Metal Value Comparison Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Scrap+Value+ROI+Calculation" alt="Scrap Metal Value Comparison Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Scrap Metal Value Recovery Initiative</h3>
-                                    <p class="project-summary">Identified a significant value leakage in the scrap disposal process where high-value copper cable was sold at a generic, low price. By investing $1.9K in a wire stripping machine, the first batch alone generated a net savings of over $12.5K, with an expected ongoing annual benefit of $30K+.</p>
+                                    <p class="project-summary">Identified and corrected significant value leakage in the scrap disposal process. By investing $1.9K in a wire stripping machine to segregate high-value copper, the first batch alone generated a net savings of over $12.5K, establishing an ongoing annual benefit of $30K+.</p>
                                     <div class="project-tags"><span>Value Stream Mapping</span><span>ROI Analysis</span><span>Process Improvement</span><span>Waste Reduction</span></div>
                                 </div>
                             </div>
                              <div class="project-item" data-project="be-5">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Canteen+Cost+Breakdown" alt="Canteen Cost Breakdown Pie Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Vendor+Contract+Cost-Benefit" alt="Canteen Cost Breakdown Pie Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Canteen Services Cost Optimization</h3>
-                                    <p class="project-summary">Analyzed a $2M annual expenditure on yard canteen services and employee food allowances. A deep dive into the vendor contract revealed opportunities to back-charge for services like cleaning and waste disposal, while an employee survey uncovered widespread dissatisfaction, building a strong case for re-tendering the contract to improve quality and reduce costs.</p>
+                                    <p class="project-summary">Analyzed a $2M annual expenditure on canteen services. A deep dive into the vendor contract revealed opportunities for immediate savings, while an employee survey uncovered widespread dissatisfaction, building a strong case for re-tendering the contract.</p>
                                     <div class="project-tags"><span>Contract Analysis</span><span>Cost Optimization</span><span>Stakeholder Management</span><span>Survey Analysis</span></div>
                                 </div>
                             </div>
@@ -507,11 +646,11 @@
                     <div id="c" class="tab-content">
                         <div class="space-y-24 md:space-y-32">
                             <div class="project-item" data-project="ds-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Financial+Strategy+Model" alt="Consulting Cost-Saving Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Lean+Six+Sigma+Implementation" alt="Consulting Cost-Saving Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">Management Consulting</p>
                                     <h3 class="project-title">Enterprise Cost-Saving Strategy</h3>
-                                    <p class="project-summary">Spearheaded a consulting engagement that proposed over $3M in actionable cost-saving strategies for enterprise clients. Saved one key account $200K annually through the direct implementation of Lean Six Sigma principles.</p>
+                                    <p class="project-summary">Spearheaded a consulting engagement that proposed over $3M in actionable cost-saving strategies for enterprise clients. Directly saved one key account $200K annually through the implementation of Lean Six Sigma principles and process optimization.</p>
                                     <div class="project-tags"><span>Data Science</span><span>Financial Modeling</span><span>Change Management</span></div>
                                 </div>
                             </div>
@@ -521,61 +660,61 @@
                     <div id="ba" class="tab-content">
                         <div class="space-y-24 md:space-y-32">
                             <div class="project-item" data-project="ba-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Customer+Segmentation+Dashboard" alt="Customer Segmentation Dashboard Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=RFM+Customer+Segmentation" alt="Customer Segmentation Dashboard Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">E-commerce Customer Segmentation</h3>
-                                    <p class="project-summary">Conducted a comprehensive customer segmentation analysis for an e-commerce client, identifying key user groups. This led to a 15% increase in targeted marketing campaign ROI and a 10% lift in customer lifetime value.</p>
+                                    <p class="project-summary">Conducted a comprehensive customer segmentation analysis for an e-commerce client. Identified key user groups that enabled a shift to targeted marketing, leading to a 15% increase in campaign ROI and a 10% lift in customer lifetime value.</p>
                                     <div class="project-tags"><span>Data Analysis</span><span>SQL</span><span>Tableau</span><span>Marketing Analytics</span></div>
                                 </div>
                             </div>
                             <div class="project-item flex-row-reverse" data-project="ba-2">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Warehouse+KPI+Dashboard" alt="Warehouse KPI Dashboard Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Live+KPI+Dashboard+for+Operations" alt="Warehouse KPI Dashboard Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Live Warehouse Operations Dashboard</h3>
-                                    <p class="project-summary">Designed a comprehensive, multi-tabbed BI dashboard to give management real-time visibility into warehouse operations. This transformed mountains of raw Oracle data into actionable insights for planning, productivity, and resource management.</p>
+                                    <p class="project-summary">Designed and specified a comprehensive BI dashboard to give management real-time visibility into warehouse operations. This transformed raw Oracle data into actionable insights for planning, productivity, and resource management.</p>
                                     <div class="project-tags"><span>Business Intelligence</span><span>Dashboard Design</span><span>KPI Definition</span><span>Oracle ERP</span></div>
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-3">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Digital+Inventory+System" alt="Digital Inventory System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Digital+vs+Manual+Process+Flow" alt="Digital Inventory System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Digital Inventory Cycle Count System</h3>
-                                    <p class="project-summary">Led the re-engineering of a manual, paper-based inventory counting process. The new digital system, designed for tablets, was projected to reduce cycle time by 55%—saving over 25 days of man-hours annually—while eliminating data entry errors.</p>
+                                    <p class="project-summary">Led the re-engineering of a manual, paper-based inventory counting process. The new digital system was projected to reduce cycle time by 55%—saving over 25 days of man-hours annually—while eliminating data entry errors.</p>
                                     <div class="project-tags"><span>Process Re-engineering</span><span>Gap Analysis</span><span>UI/UX Design</span><span>Cost Savings</span></div>
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="ba-4">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Oracle+DO+Register" alt="Oracle DO Register Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Oracle+ERP+Enhancement+Mockup" alt="Oracle DO Register Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Oracle DO Register & GRN Automation</h3>
-                                    <p class="project-summary">Identified a critical data gap in the material receiving process and designed a new "DO Register" screen in Oracle. This enabled the accurate, automated tracking of the "GRN within 48 hours" KPI and provided complete traceability from the moment of receipt.</p>
+                                    <p class="project-summary">Identified a critical data gap in the material receiving process and designed a new "DO Register" screen in Oracle. This enabled the accurate, automated tracking of the "GRN within 48 hours" KPI and provided complete traceability.</p>
                                     <div class="project-tags"><span>Oracle ERP</span><span>Functional Requirements</span><span>Process Automation</span><span>KPI Reporting</span></div>
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-5">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Welding+Traceability+System" alt="Welding Traceability System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Mobile+Scanning+App+Prototype" alt="Welding Traceability System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Welding Consumable Traceability System</h3>
-                                    <p class="project-summary">Authored the functional requirements for a new digital system to replace a manual, error-prone process for tracking welding consumables. The solution, using barcodes and a mobile app, reduced transaction times from 5 minutes to under 30 seconds.</p>
+                                    <p class="project-summary">Authored the functional requirements for a new digital system to replace a manual, error-prone process. The new solution, using barcodes and a mobile app, reduced transaction times from 5 minutes to under 30 seconds.</p>
                                     <div class="project-tags"><span>Process Improvement</span><span>Functional Requirements</span><span>Automation</span><span>Oracle ERP</span></div>
                                 </div>
                             </div>
                             <div class="project-item flex-row-reverse" data-project="ba-6">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Inventory+Hierarchy+Diagram" alt="Warehouse Inventory System Standardization Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=New+Inventory+Data+Hierarchy" alt="Warehouse Inventory System Standardization Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Warehouse Inventory System Standardization</h3>
-                                    <p class="project-summary">Redesigned the entire Oracle Inventory structure to eliminate data duplication and improve clarity. Introduced a new hierarchical system for sub-inventories and locators, complete with capacity data, to enable efficient, data-driven material allocation.</p>
+                                    <p class="project-summary">Redesigned the entire Oracle Inventory structure to eliminate data duplication and improve clarity. Introduced a new hierarchical system to enable efficient, data-driven material allocation and capacity planning for the first time.</p>
                                     <div class="project-tags"><span>Oracle ERP</span><span>Data Standardization</span><span>Process Re-engineering</span></div>
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-7">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=End-to-End+Traceability+Report" alt="Material Traceability Reporting Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Consolidated+Traceability+Report" alt="Material Traceability Reporting Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">End-to-End Material Traceability Reporting</h3>
@@ -584,7 +723,7 @@
                                 </div>
                             </div>
                             <div class="project-item flex-row-reverse" data-project="ba-8">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=QR+Code+Scanning+App" alt="QR Code Warehouse System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Warehouse+QR+Code+System+Flow" alt="QR Code Warehouse System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">QR Code-Based Digital Warehouse System</h3>
@@ -593,7 +732,7 @@
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-9">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0a0a0a/e0e0e0?text=Shelf-Life+Alert+System" alt="Shelf-Life Tracking System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Automated+Expiry+Alert+Logic" alt="Shelf-Life Tracking System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Automated Shelf-Life & Expiry Tracking System</h3>
@@ -606,29 +745,51 @@
                 </div>
             </section>
 
+            <!-- AI Interview Section -->
+            <section id="ai-interview" class="section my-20" data-animation="contact">
+                <h2 class="text-3xl font-bold text-center mb-6 uppercase tracking-widest">AI-Powered Interview</h2>
+                <div class="max-w-2xl mx-auto text-center">
+                    <p class="text-gray-600 mb-8 text-lg">Curious about my approach to product management? Ask my AI-powered digital twin a few questions to get a feel for how I think. This is an experimental feature powered by the Gemini API.</p>
+                    <button id="start-ai-chat-btn" class="project-btn font-bold py-4 px-10 rounded-full uppercase tracking-widest text-lg">✨ Start the Interview</button>
+                </div>
+            </section>
+
+
             <!-- Contact Section -->
             <section id="contact" class="section my-20" data-animation="contact">
                 <h2 class="text-3xl font-bold text-center mb-12 uppercase tracking-widest">Let's Connect</h2>
-                <div class="max-w-xl mx-auto text-center"><p class="text-gray-300 mb-8 text-lg">I'm always open to discussing new projects, creative ideas, or opportunities to be part of an ambitious team.</p><a href="mailto:jaisontmathew@gmail.com" class="project-btn font-bold py-4 px-10 rounded-full uppercase tracking-widest text-lg">Get In Touch</a></div>
+                <div class="max-w-xl mx-auto text-center"><p class="text-gray-600 mb-8 text-lg">I'm always open to discussing new projects, creative ideas, or opportunities to be part of an ambitious team.</p><a href="mailto:jaisontmathew@gmail.com" class="project-btn font-bold py-4 px-10 rounded-full uppercase tracking-widest text-lg">Get In Touch</a></div>
             </section>
         </main>
 
         <!-- Footer -->
-        <footer class="bg-black py-6 relative z-10"><div class="container mx-auto px-6 text-center text-gray-500"><p>&copy; 2024 Jackson Mathew. All Rights Reserved.</p></div></footer>
+        <footer class="bg-white py-6 relative z-10 border-t border-gray-200"><div class="container mx-auto px-6 text-center text-gray-500"><p>&copy; 2024 Jackson Mathew. All Rights Reserved.</p></div></footer>
     </div>
 
     <!-- Project Detail Pages -->
     <div id="project-pages">
         <!-- Case Study 1: Medical Device App -->
-        <div id="pm-1" class="page"><div class="container mx-auto max-w-6xl text-white"><button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Medical Device Management App</h1><p class="text-lg text-gray-400">Driving efficiency and accuracy in healthcare with AI-powered enterprise solutions.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Leading IT Solutions Provider</span></p><p><strong>My Role:</strong> <span>Project Manager, Business Analyst</span></p><p><strong>Timeline:</strong> <span>5 Months</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Jira, Confluence</span></p><p><span>Power BI</span></p><p><span>Agile, Scrum</span></p><p><span>Predictive Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Problem & Goal</h2><p>A major medical device manufacturer was hampered by an outdated system for tracking device usage. The process was manual, error-prone, and slow, creating compliance risks and operational bottlenecks. The primary goal was to develop a modern, centralized enterprise application to automate tracking, improve reporting accuracy, and predict maintenance needs to prevent downtime.</p><h2>Role & Responsibilities</h2><p>As the Project Manager and Business Analyst, I led the project from concept to launch. My responsibilities included: gathering and documenting requirements from stakeholders (technicians, compliance officers), creating user stories, managing the product backlog in Jira, facilitating all Agile/Scrum ceremonies (sprints, stand-ups, retrospectives), and serving as the primary liaison between the 15-person development team and executive leadership.</p><h2>Outcomes (Metrics)</h2><p>The new application was a transformative success, delivering significant, measurable value:</p><ul><li><strong>30% Boost in Reporting Accuracy:</strong> AI-driven analytics and reduced manual entry eliminated common errors.</li><li><strong>20% Faster Project Timelines:</strong> Clear documentation and agile execution accelerated development and deployment.</li><li><strong>15% Increase in Team Efficiency:</strong> Automated workflows and KPI monitoring freed up valuable technician and administrative time.</li></ul><h2>Visuals</h2><p>The project involved creating detailed process flows, wireframes for the user interface, and a comprehensive product roadmap.</p><div class="visual-container mt-8"><img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Medical+App+Product+Roadmap" alt="Product Roadmap" class="rounded-lg my-4 border border-gray-700 w-full"></div><div class="mt-4 text-center"><label for="attachment-pm1" class="attachment-btn">Attach Wireframe</label><input type="file" id="attachment-pm1" class="hidden" accept="image/*"><span class="ml-4 text-sm text-gray-400"></span></div></div></div></div></div>
+        <div id="pm-1" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Medical Device Management App</h1><p class="text-lg text-gray-500">Driving efficiency and accuracy in healthcare with AI-powered enterprise solutions.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Leading IT Solutions Provider</span></p><p><strong>My Role:</strong> <span>Project Manager, Business Analyst</span></p><p><strong>Timeline:</strong> <span>5 Months</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Jira, Confluence</span></p><p><span>Power BI</span></p><p><span>Agile, Scrum</span></p><p><span>Predictive Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Problem & Goal</h2><p>A major medical device manufacturer was hampered by an outdated system for tracking device usage. The process was manual, error-prone, and slow, creating compliance risks and operational bottlenecks. The primary goal was to develop a modern, centralized enterprise application to automate tracking, improve reporting accuracy, and predict maintenance needs to prevent downtime.</p><h2>My Role & Responsibilities</h2><p>As the Project Manager and Business Analyst, I led the project from concept to launch. My responsibilities included: gathering and documenting requirements from stakeholders (technicians, compliance officers), creating user stories, managing the product backlog in Jira, facilitating all Agile/Scrum ceremonies (sprints, stand-ups, retrospectives), and serving as the primary liaison between the 15-person development team and executive leadership.</p>
+        <h2>Challenges & My Approach</h2><p>One of the primary challenges was navigating conflicting priorities between the compliance department, which required robust audit trails, and the field technicians, who needed a fast, streamlined mobile interface. To resolve this, I facilitated a series of workshops using journey mapping to find common ground. This collaborative process led to a prioritized backlog in Jira that balanced compliance needs with user experience, securing buy-in from both groups. I also championed the allocation of 15% of each sprint to addressing technical debt from the legacy system, a decision I justified to leadership with a clear ROI based on projected long-term development velocity.</p>
+        <h2>Outcomes & User Impact</h2><p>The new application was a transformative success, delivering significant, measurable value:</p><ul><li><strong>30% Boost in Reporting Accuracy:</strong> AI-driven analytics and reduced manual entry eliminated common errors, ensuring data integrity.</li><li><strong>20% Faster Project Timelines:</strong> Clear documentation and agile execution accelerated development and deployment.</li><li><strong>15% Increase in Team Efficiency:</strong> Automated workflows and KPI monitoring freed up valuable technician and administrative time.</li><li><strong>40% Reduction in User-Reported Errors:</strong> The intuitive UI design drastically improved the daily experience for field technicians.</li></ul><h2>Visuals & Deliverables</h2><p>Key deliverables included detailed process flow diagrams, interactive wireframes, and the comprehensive product roadmap. The Power BI dashboard provided executives with real-time insights into device performance and maintenance forecasts.</p><div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Medical+App+Product+Roadmap" alt="Product Roadmap" class="rounded-lg my-4 border border-gray-200 w-full"></div>
+        <h2>Key Lessons Learned</h2><p>This project reinforced the value of proactive stakeholder management. By bringing opposing groups into the same room early, we converted potential roadblocks into collaborative design decisions. It also taught me the importance of advocating for technical health as a core product feature, not just a 'nice-to-have'.</p></div></div></div></div>
         
+        <!-- Case Study PM 2: Google Search -->
+        <div id="pm-2" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Google Search Experience Enhancement</h1><p class="text-lg text-gray-500">A product strategy proposal for a more accessible and accurate search experience.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Search & Accessibility</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Product Strategy</span></p><p><span>UX Research</span></p><p><span>Accessibility</span></p><p><span>AI/Bard</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon for a full breakdown of the challenges, approach, and outcomes.</p><p>In summary, this project involved authoring a product strategy proposal to enhance Google Search, focusing on accessibility for visually impaired users, improving result accuracy for technical queries, and combating misinformation for students with AI-powered summaries.</p><div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Case+Study+Coming+Soon" alt="Coming Soon" class="rounded-lg my-4 border border-gray-200 w-full"></div></div></div></div></div>
+
+        <!-- Case Study PM 3: LinkedIn Optimizer -->
+        <div id="pm-3" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">AI-Powered LinkedIn Profile Optimizer</h1><p class="text-lg text-gray-500">A product concept for optimizing professional networking with AI.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Professional Networking & AI</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Product Design</span></p><p><span>AI</span></p><p><span>Figma</span></p><p><span>User Experience</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon for a full breakdown of the challenges, approach, and outcomes.</p><p>In summary, this project involved designing an innovative product concept for an AI tool that analyzes LinkedIn profiles to provide actionable feedback, suggest keyword optimizations, and help users attract more relevant job opportunities.</p><div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Case+Study+Coming+Soon" alt="Coming Soon" class="rounded-lg my-4 border border-gray-200 w-full"></div></div></div></div></div>
+
+        <!-- Case Study PM 4: Myntra Onboarding -->
+        <div id="pm-4" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Myntra Onboarding Experience Redesign</h1><p class="text-lg text-gray-500">Increasing e-commerce conversion through gamification and personalization.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>E-commerce & User Onboarding</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>User Onboarding</span></p><p><span>E-commerce</span></p><p><span>UX/UI</span></p><p><span>Gamification</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon for a full breakdown of the challenges, approach, and outcomes.</p><p>In summary, this project involved analyzing and redesigning the new user journey for a major e-commerce platform. Identified key friction points and proposed a new flow featuring enhanced personalization, gamification, and a virtual try-on feature to boost conversion and engagement.</p><div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Case+Study+Coming+Soon" alt="Coming Soon" class="rounded-lg my-4 border border-gray-200 w-full"></div></div></div></div></div>
+
         <!-- Case Study Business Excellence 1: IoT Monitoring -->
         <div id="be-1" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
                 <div class="text-center mb-12">
                     <h1 class="text-4xl lg:text-5xl font-bold mb-2">IoT-Based Automated Climate Monitoring</h1>
-                    <p class="text-lg text-gray-400">Eliminating manual checks and mitigating compliance risks with a real-time sensor network.</p>
+                    <p class="text-lg text-gray-500">Eliminating manual checks and mitigating compliance risks with a real-time sensor network.</p>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <div class="lg:col-span-1">
@@ -637,26 +798,23 @@
                             <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
                             <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Process Automation (RPA)</span></p>
-                            <p><span>IoT (iMonnit Sensors)</span></p>
-                            <p><span>Cost-Benefit Analysis</span></p>
-                            <p><span>Stakeholder Management</span></p>
+                            <p><span>Process Automation</span></p><p><span>IoT (iMonnit Sensors)</span></p><p><span>Cost-Benefit Analysis</span></p><p><span>Change Management</span></p>
                         </div>
                     </div>
                     <div class="lg:col-span-2 case-study-content">
                         <h2>Business Problem</h2>
-                        <p>The company relied on a manual process for monitoring temperature and humidity in 10 climate-controlled storage areas. Staff conducted checks three times daily, recording data in a physical logbook. This process was labor-intensive (consuming 2.5 hours daily), prone to gaps in data between checks, and lacked an immediate alert system for climate breaches, posing a significant risk to high-value, sensitive materials.</p>
-                        <h2>My Role & Solution</h2>
-                        <p>I led the initiative to automate this process. After conducting a time-and-motion study to quantify the inefficiency of the manual process, I researched and vetted IoT vendors, ultimately selecting a cost-effective solution. I managed the proof-of-concept (POC) with 3 sensors and one gateway, establishing the system's reliability. The solution involved deploying wireless temperature and humidity sensors that provided 24/7 monitoring and sent automated email/SMS alerts to key personnel the moment conditions deviated from the acceptable range (30°C +/- 10°C, <60% humidity).</p>
-                        <h2>Key Findings & Business Impact</h2>
+                        <p>The company relied on a manual process for monitoring temperature and humidity in 10 climate-controlled storage areas. This process was labor-intensive (consuming 2.5 hours daily), prone to gaps in data, and lacked an immediate alert system for climate breaches, posing a significant risk to high-value, sensitive materials.</p>
+                        <h2>Challenges & My Approach</h2>
+                        <p>The main challenge was securing buy-in from a risk-averse operations team accustomed to manual processes. They were skeptical about the reliability of new technology. To overcome this, I proposed a small-scale, low-cost proof-of-concept (POC) with just three sensors. I managed the POC, presenting weekly reliability reports to stakeholders. The flawless performance of the POC built the confidence needed for a full-scale rollout.</p>
+                        <h2>Outcomes & Business Impact</h2>
                         <ul>
                             <li><strong>100% Elimination of Manual Checks:</strong> The automated system completely replaced the manual logging process, freeing up <strong>2.5 hours of labor daily</strong> for more value-added tasks.</li>
                             <li><strong>Real-Time Risk Mitigation:</strong> The instant alert system allowed for immediate corrective action, preventing potential spoilage of sensitive materials and ensuring <strong>100% compliance with client and internal quality standards.</strong></li>
-                            <li><strong>Enhanced Data Granularity:</strong> The system provided a continuous stream of climate data, offering deeper insights into environmental fluctuations compared to the previous three-data-points-per-day model.</li>
+                            <li><strong>Enhanced Data Granularity:</strong> The system provided a continuous stream of climate data, offering deeper insights into environmental fluctuations.</li>
                         </ul>
-                        <div class="visual-container mt-8">
-                            <img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=iMonnit+Dashboard+and+Alerts" alt="IoT Dashboard" class="rounded-lg my-4 border border-gray-700 w-full">
-                        </div>
+                        <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Live+Temperature+&+Humidity+Dashboard" alt="IoT Dashboard" class="rounded-lg my-4 border border-gray-200 w-full"></div>
+                        <h2>Key Lessons Learned</h2>
+                        <p>A phased approach is critical for introducing new technology into traditional environments. A successful, data-driven POC is the most powerful tool for overcoming skepticism and demonstrating value, making stakeholder management and change adoption significantly smoother.</p>
                     </div>
                 </div>
             </div>
@@ -664,11 +822,11 @@
 
         <!-- Case Study Business Excellence 2: Forklift Optimization -->
         <div id="be-2" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
                 <div class="text-center mb-12">
                     <h1 class="text-4xl lg:text-5xl font-bold mb-2">Forklift Fleet Optimization Strategy</h1>
-                    <p class="text-lg text-gray-400">Using data analysis to drive significant cost savings in heavy equipment management.</p>
+                    <p class="text-lg text-gray-500">Using data analysis to drive significant cost savings in heavy equipment management.</p>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <div class="lg:col-span-1">
@@ -677,28 +835,23 @@
                             <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
                             <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Excel (Pareto, Cost Analysis)</span></p>
-                            <p><span>Root Cause Analysis (RCA)</span></p>
-                            <p><span>Asset Management</span></p>
+                            <p><span>Excel (Pareto, Cost Analysis)</span></p><p><span>Root Cause Analysis (RCA)</span></p><p><span>Asset Management</span></p>
                         </div>
                     </div>
                     <div class="lg:col-span-2 case-study-content">
                         <h2>Business Problem</h2>
-                        <p>The company's forklift fleet of 35 units was a significant operational expense, but there was no data-driven strategy for its management. Decisions about hiring versus owning, and when to retire aging assets, were made ad-hoc. This resulted in excessive maintenance costs, poor utilization, and missed opportunities for cost savings.</p>
-                        <h2>My Role & Solution</h2>
-                        <p>I initiated and led a comprehensive analysis of the entire forklift fleet. My process was to:</p>
-                        <ol>
-                            <li><strong>Analyze Fleet Data:</strong> I gathered and analyzed 31 months of data on meter readings, fuel consumption, maintenance costs, and age for all 35 forklifts.</li>
-                            <li><strong>Identify Key Issues:</strong> Pareto analysis revealed that 7-ton forklifts were the most numerous but not always the most needed. A key finding was the fleet's chronic underutilization, averaging only 56% of a standard 11-hour workday. Furthermore, 70% of the fleet was over 10 years old, leading to escalating maintenance costs.</li>
-                            <li><strong>Build a Business Case:</strong> I conducted a detailed cost-benefit analysis, comparing the actual hourly cost of owned equipment (including fuel, maintenance, operator) with rental market rates. This revealed that for several aging forklifts, renting was significantly cheaper.</li>
-                            <li><strong>Propose Actionable Recommendations:</strong> Based on the data, I recommended scrapping the 4 most inefficient forklifts, creating a projected annual savings of over <strong>$172,000</strong>. I also designed a new process map for equipment allocation to prioritize lower-cost rentals over high-cost owned assets.</li>
-                        </ol>
-                        <h2>Key Findings & Business Impact</h2>
+                        <p>The company's forklift fleet of 35 units was a significant operational expense, but there was no data-driven strategy for its management. This resulted in excessive maintenance costs, poor utilization, and missed opportunities for cost savings.</p>
+                        <h2>Challenges & My Approach</h2>
+                        <p>The primary challenge was the poor quality and fragmentation of historical data. Maintenance logs were inconsistent, and meter readings were often recorded inaccurately. I dedicated the initial phase to data cleaning and validation, collaborating with the maintenance team to reconcile discrepancies. I then used Pareto analysis in Excel to identify that just a few aging machines were responsible for a disproportionate amount of costs, which became the cornerstone of my business case.</p>
+                        <h2>Outcomes & Business Impact</h2>
                         <ul>
                             <li><strong>Identified $172K+ in Annual Savings:</strong> The data-driven recommendation to scrap 4 specific high-maintenance forklifts and optimize the hire/own strategy was projected to save over $14K per month.</li>
                             <li><strong>Revealed 44% Underutilization:</strong> The analysis brought to light the fleet's poor overall efficiency, sparking a wider conversation about resource scheduling and planning.</li>
                             <li><strong>Created a Data-Driven Framework:</strong> This project established a new, analytical framework for all future asset management decisions, moving the company from reactive maintenance to proactive, cost-conscious fleet strategy.</li>
                         </ul>
+                         <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Maintenance+Cost+vs+Asset+Age+Analysis" alt="Cost Analysis Chart" class="rounded-lg my-4 border border-gray-200 w-full"></div>
+                        <h2>Key Lessons Learned</h2>
+                        <p>Never underestimate the power of foundational data quality. The success of any analysis hinges on reliable data, and investing time in cleaning and validating upfront is crucial for generating credible, actionable insights that leadership can trust.</p>
                     </div>
                 </div>
             </div>
@@ -706,11 +859,11 @@
 
         <!-- Case Study Business Excellence 3: Welder Performance -->
         <div id="be-3" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
                 <div class="text-center mb-12">
                     <h1 class="text-4xl lg:text-5xl font-bold mb-2">Welder Performance & Quality Improvement</h1>
-                    <p class="text-lg text-gray-400">A Lean Six Sigma approach to reducing production delays and improving weld quality.</p>
+                    <p class="text-lg text-gray-500">A Lean Six Sigma approach to reducing production delays and improving weld quality.</p>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <div class="lg:col-span-1">
@@ -719,28 +872,22 @@
                             <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
                             <p><strong>My Role:</strong> <span>Project Leader (LSS Green Belt)</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Lean Six Sigma (DMAIC)</span></p>
-                            <p><span>Root Cause Analysis (RCA)</span></p>
-                            <p><span>Pareto Analysis, Fishbone Diagram</span></p>
-                            <p><span>Statistical Analysis (Chi-Square)</span></p>
+                            <p><span>Lean Six Sigma (DMAIC)</span></p><p><span>Root Cause Analysis (Fishbone, 5 Whys)</span></p><p><span>Statistical Analysis</span></p>
                         </div>
                     </div>
                     <div class="lg:col-span-2 case-study-content">
                         <h2>Business Problem</h2>
-                        <p>A critical energy project was plagued by significant production delays caused by a bottleneck in the welding inspection process. The time from weld completion to the final Non-Destructive Testing (NDT) was unacceptably long, and a high NDT rejection rate of 18.15% was forcing costly and time-consuming rework.</p>
-                        <h2>My Role & Solution</h2>
-                        <p>As the project leader, I applied the DMAIC (Define, Measure, Analyze, Improve, Control) methodology. In the "Analyze" phase, I conducted a deep-dive RCA:</p>
-                        <ol>
-                            <li><strong>Process Mapping & Data Analysis:</strong> I mapped the end-to-end process and analyzed delay data, finding that 35% of delays exceeded 10 days. A key insight was that pre-inspection grinding, a low-skill task, was being performed by highly-skilled, expensive welders, consuming 16% of their total time.</li>
-                            <li><strong>Pareto & Cause-and-Effect Analysis:</strong> A Pareto analysis of visual inspection rejections showed that "Toe Grinding" issues were a primary cause (55%). A fishbone diagram helped identify welder training and technique as key areas for improvement.</li>
-                            <li><strong>Statistical Analysis:</strong> I analyzed welder performance data, discovering that 72% of "Below Average" welders were from subcontracted labor. A Chi-Square test confirmed a statistically significant relationship between welder experience and performance.</li>
-                        </ol>
-                        <h2>Key Findings & Business Impact</h2>
+                        <p>A critical energy project was plagued by production delays caused by a bottleneck in the welding inspection process. The time from weld completion to the final NDT was unacceptably long, and a high NDT rejection rate of 18.15% was forcing costly rework.</p>
+                         <h2>Challenges & My Approach</h2>
+                        <p>The challenge was cultural. The production floor was resistant to what they perceived as "ivory tower" analysis. To build trust, I spent significant time on the floor, observing workflows and interviewing welders and inspectors directly. This hands-on approach, combined with data from a Fishbone diagram workshop, allowed me to pinpoint that pre-inspection grinding—a low-skill task—was consuming 16% of highly-skilled welders' time. This tangible, easily understood finding quickly gained me credibility with the team.</p>
+                        <h2>Outcomes & Business Impact</h2>
                         <ul>
-                            <li><strong>Identified $20,000/Month in Savings:</strong> By quantifying the time welders spent on grinding, I built a successful business case to create a dedicated, lower-cost grinding team. This freed up skilled welders to focus on high-value work, delivering an immediate ROI.</li>
-                            <li><strong>Pinpointed Root Causes of Defects:</strong> The analysis provided clear evidence linking high defect rates to specific joint types, inadequate training, and underperforming subcontractors, allowing for targeted improvement actions.</li>
-                            <li><strong>Data-Driven HR Strategy:</strong> The findings provided HR and procurement with a data-driven basis for blacklisting underperforming labor suppliers and refining their welder selection and training programs.</li>
+                            <li><strong>Identified $20,000/Month in Savings:</strong> By quantifying the time welders spent on grinding, I built a successful business case to create a dedicated, lower-cost grinding team, delivering an immediate ROI.</li>
+                            <li><strong>Pinpointed Root Causes of Defects:</strong> The analysis provided clear evidence linking high defect rates to specific joint types and inadequate training, allowing for targeted improvement actions.</li>
+                            <li><strong>Data-Driven HR Strategy:</strong> The findings provided HR with a data-driven basis for refining their welder selection and training programs.</li>
                         </ul>
+                        <h2>Key Lessons Learned</h2>
+                        <p>Quantitative data is powerful, but qualitative, on-the-ground insights are essential for context and buy-in. To drive real change in an operational environment, you must build relationships and demonstrate that your analysis is rooted in the reality of the work being done.</p>
                     </div>
                 </div>
             </div>
@@ -748,11 +895,11 @@
         
         <!-- Case Study Business Excellence 4: Scrap Metal -->
         <div id="be-4" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
                 <div class="text-center mb-12">
                     <h1 class="text-4xl lg:text-5xl font-bold mb-2">Scrap Metal Value Recovery Initiative</h1>
-                    <p class="text-lg text-gray-400">Applying Lean principles to turn operational waste into a significant revenue stream.</p>
+                    <p class="text-lg text-gray-500">Applying Lean principles to turn operational waste into a significant revenue stream.</p>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <div class="lg:col-span-1">
@@ -761,27 +908,22 @@
                             <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
                             <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Lean Six Sigma (Value Stream)</span></p>
-                            <p><span>ROI Analysis</span></p>
-                            <p><span>Process Improvement</span></p>
+                            <p><span>Lean (Value Stream Mapping)</span></p><p><span>ROI Analysis</span></p><p><span>Process Improvement</span></p>
                         </div>
                     </div>
                     <div class="lg:col-span-2 case-study-content">
                         <h2>Business Problem</h2>
-                        <p>The company was selling scrap copper cable wire at a blended, low rate of $3,833/ton, approximately 50% below the London Metal Exchange (LME) price for pure copper. This represented a significant and untapped revenue opportunity, as the high-value copper was not being segregated from its low-value insulation.</p>
-                        <h2>My Role & Solution</h2>
-                        <p>I identified this value leakage and led a cross-functional team (Operations, Supply Chain, HSES) to implement a simple, high-impact solution. My approach was:</p>
-                        <ol>
-                            <li><strong>Quantify the Opportunity:</strong> I analyzed a sample batch, determining that the cable had a copper-to-insulation ratio of approximately 70:30. This data proved that the potential value of the separated copper far exceeded the current scrap price.</li>
-                            <li><strong>Propose a Low-Cost Solution:</strong> I researched and proposed the purchase of a wire stripping machine and surveillance cameras for secure storage, with a total one-time investment of only $1,882.</li>
-                            <li><strong>Execute and Measure:</strong> I managed the implementation of the new process. We stripped the copper from the first batch of scrap cable and sold it as a separate commodity.</li>
-                        </ol>
-                        <h2>Key Findings & Business Impact</h2>
+                        <p>The company was selling scrap copper cable at a blended, low rate, approximately 50% below the market price for pure copper. This represented a significant and untapped revenue opportunity, as the high-value copper was not being segregated from its low-value insulation.</p>
+                        <h2>Challenges & My Approach</h2>
+                        <p>The challenge was not analytical, but operational. I had to coordinate with three different departments—Operations, Supply Chain, and HSES—each with their own priorities, to implement a new physical process. I created a simple, one-page process map and a clear RACI chart to define roles and responsibilities. By clearly articulating the financial benefit and making the new process easy to adopt, I was able to secure the cross-functional collaboration needed for a smooth implementation.</p>
+                        <h2>Outcomes & Business Impact</h2>
                         <ul>
                             <li><strong>Immediate 665% ROI:</strong> The very first batch of segregated copper generated a net profit of <strong>$12,521</strong> on an initial investment of just $1,882.</li>
-                            <li><strong>Generated $14.4K in Additional Revenue:</strong> The segregated copper from the first batch sold for $51,351, compared to the $36,949 it would have fetched as mixed cable scrap—a 39% uplift.</li>
-                            <li><strong>Created a New, Sustainable Revenue Stream:</strong> The project established a new, ongoing process projected to generate an additional <strong>$30,000+ annually</strong> from what was previously considered low-value waste.</li>
+                            <li><strong>Generated $14.4K in Additional Revenue:</strong> The segregated copper from the first batch sold for a 39% higher price than it would have as mixed scrap.</li>
+                            <li><strong>Created a Sustainable Revenue Stream:</strong> The project established a new, ongoing process projected to generate an additional <strong>$30,000+ annually</strong> from what was previously considered waste.</li>
                         </ul>
+                        <h2>Key Lessons Learned</h2>
+                        <p>A brilliant idea is worthless without execution. For process improvement projects, clear communication, simple documentation (like a one-page process map), and defined ownership are just as important as the financial analysis itself.</p>
                     </div>
                 </div>
             </div>
@@ -789,11 +931,11 @@
 
         <!-- Case Study Business Excellence 5: Canteen Optimization -->
         <div id="be-5" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
                 <div class="text-center mb-12">
                     <h1 class="text-4xl lg:text-5xl font-bold mb-2">Canteen Services Cost Optimization</h1>
-                    <p class="text-lg text-gray-400">Using contract analysis and employee feedback to address a $2M annual expenditure.</p>
+                    <p class="text-lg text-gray-500">Using contract analysis and employee feedback to address a $2M annual expenditure.</p>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <div class="lg:col-span-1">
@@ -802,358 +944,96 @@
                             <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
                             <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Contract Review & Analysis</span></p>
-                            <p><span>Survey Design & Analysis</span></p>
-                            <p><span>Stakeholder Management (HR, Legal)</span></p>
+                            <p><span>Contract Analysis</span></p><p><span>Survey Design (Microsoft Forms)</span></p><p><span>Stakeholder Management</span></p>
                         </div>
                     </div>
                     <div class="lg:col-span-2 case-study-content">
                         <h2>Business Problem</h2>
-                        <p>The company was spending approximately $2 million annually on yard canteen amenities and food allowances for over 3,000 employees. This significant expenditure lacked proper oversight, and the value being delivered by the third-party catering vendor was unclear. The goal was to minimize this annual expenditure while ensuring employee satisfaction.</p>
-                        <h2>My Role & Solution</h2>
-                        <p>I initiated a project to scrutinize this major cost center. My approach combined legal analysis with employee-centric data gathering:</p>
-                        <ol>
-                            <li><strong>Contract Analysis:</strong> I conducted a thorough review of the catering services contract. The key finding was that the company's only explicit responsibilities were LPG gas and accommodation. Crucially, services like cleaning manpower ($70K/year) and food waste disposal ($13K/year) were not mentioned, making them the vendor's responsibility.</li>
-                            <li><strong>Employee Feedback Survey:</strong> To gauge service quality, I designed and deployed a comprehensive survey to over 2,000 yard employees.</li>
-                            <li><strong>Data Synthesis and Negotiation Strategy:</strong> I analyzed the survey results, which revealed widespread dissatisfaction: 81% of employees did not want to continue with the current caterer, and over 60% cited poor hygiene and lack of variety.</li>
-                        </ol>
-                        <h2>Key Findings & Business Impact</h2>
+                        <p>The company was spending approximately $2 million annually on canteen amenities and food allowances. This significant expenditure lacked proper oversight, and the value being delivered by the third-party catering vendor was unclear.</p>
+                        <h2>Challenges & My Approach</h2>
+                        <p>The challenge was balancing cost-cutting with employee morale. I knew that any changes to food services could be met with resistance. My approach was to use a two-pronged strategy: a rigorous legal contract review to find objective cost savings, and a comprehensive employee survey to capture the subjective user experience. This allowed me to build a case that was not just about saving money, but also about responding to widespread employee dissatisfaction with hygiene and food quality.</p>
+                        <h2>Outcomes & Business Impact</h2>
                         <ul>
-                            <li><strong>Identified $83K+ in Direct Cost Savings:</strong> The contract analysis created immediate leverage to back-charge the vendor for services the company was unnecessarily paying for, such as cleaning and waste disposal.</li>
-                            <li><strong>Built a Data-Backed Case for Re-Tendering:</strong> The overwhelming negative feedback from the employee survey provided a powerful, undeniable justification for not renewing the contract and seeking a new vendor who could offer better quality and value.</li>
-                            <li><strong>Improved Stakeholder Alignment:</strong> By involving HR, Operations, and Safety in the process, I created a unified cross-functional team aligned on the need for change, ensuring a smooth transition to a new, more cost-effective contract.</li>
+                            <li><strong>Identified $83K+ in Direct Cost Savings:</strong> The contract analysis created immediate leverage to back-charge the vendor for services the company was unnecessarily paying for.</li>
+                            <li><strong>Built a Data-Backed Case for Re-Tendering:</strong> The survey finding that 81% of employees did not want to continue with the current caterer provided an undeniable justification for seeking a new vendor.</li>
+                            <li><strong>Improved Stakeholder Alignment:</strong> By combining financial data with employee feedback, I created a powerful narrative that aligned HR, Operations, and Safety on the need for change.</li>
                         </ul>
+                         <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Employee+Satisfaction+Survey+Results" alt="Survey Results Chart" class="rounded-lg my-4 border border-gray-200 w-full"></div>
+                        <h2>Key Lessons Learned</h2>
+                        <p>Combining quantitative data (contract analysis) with qualitative data (user feedback) creates a far more compelling argument for change than either one alone. This dual approach allows you to build a business case that satisfies both financial and human-centered objectives.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Case Study 3: Consulting -->
-        <div id="ds-1" class="page"><div class="container mx-auto max-w-6xl text-white"><button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Enterprise Cost-Saving Strategy</h1><p class="text-lg text-gray-400">Delivering multi-million dollar cost-saving strategies for enterprise clients.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Management Consulting Firm</span></p><p><strong>My Role:</strong> <span>Associate Consultant</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Financial Modeling (Excel)</span></p><p><span>Lean Six Sigma</span></p><p><span>Client Onboarding Optimization</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Problem & Goal</h2><p>Enterprise clients were burdened with significant operational overhead and inefficient processes that negatively impacted their bottom line. The goal was to conduct expert analysis to identify and implement large-scale cost-saving measures without disrupting core business functions, ultimately delivering a comprehensive strategic proposal.</p><h2>Role & Responsibilities</h2><p>As an Associate Consultant, I was responsible for data analysis, financial modeling, and contributing to the creation of strategic proposals. I worked directly on implementing Lean Six Sigma frameworks for a key client and developed a new, optimized client onboarding process that was later adopted firm-wide. My role required deep analytical skills and direct client interaction to ensure the proposed solutions were practical and effective.</p><h2>Outcomes (Metrics)</h2><ul><li><strong>$3M+ in Proposed Cost-Saving Strategies:</strong> Delivered to a portfolio of enterprise clients through detailed analysis and strategic planning.</li><li><strong>$200K in Annual Savings:</strong> Achieved for one key client through the direct implementation of Lean Six Sigma.</li><li><strong>30% Reduction in Client Onboarding Time:</strong> Improved firm efficiency and client satisfaction via a redesigned process.</li></ul><h2>Visuals</h2><p>Deliverables included comprehensive financial models, strategic presentation decks, and process maps illustrating the new onboarding workflow.</p><div class="visual-container mt-8"><img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Financial+Model+Snapshot" alt="Financial Model" class="rounded-lg my-4 border border-gray-700 w-full"></div><div class="mt-4 text-center"><label for="attachment-ds1" class="attachment-btn">Attach Model Image</label><input type="file" id="attachment-ds1" class="hidden" accept="image/*"><span class="ml-4 text-sm text-gray-400"></span></div></div></div></div></div>
+        <div id="ds-1" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Enterprise Cost-Saving Strategy</h1><p class="text-lg text-gray-500">Delivering multi-million dollar cost-saving strategies for enterprise clients.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Management Consulting Firm</span></p><p><strong>My Role:</strong> <span>Associate Consultant</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Financial Modeling (Excel)</span></p><p><span>Lean Six Sigma</span></p><p><span>Client Onboarding Optimization</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Problem & Goal</h2><p>Enterprise clients were burdened with significant operational overhead and inefficient processes. The goal was to conduct expert analysis to identify and implement large-scale cost-saving measures without disrupting core business functions.</p><h2>Challenges & My Approach</h2>
+        <p>A key challenge in consulting is ensuring that recommendations are not just theoretically sound, but also practical for the client to implement. I worked directly with a client's middle management to map their existing processes, which helped ground our Lean Six Sigma recommendations in their day-to-day reality. This collaborative approach ensured the final proposal was both ambitious and achievable, leading to greater client buy-in.</p>
+        <h2>Outcomes & Impact</h2><ul><li><strong>$3M+ in Proposed Cost-Saving Strategies:</strong> Delivered to a portfolio of enterprise clients through detailed financial modeling and strategic planning.</li><li><strong>$200K in Annual Savings:</strong> Achieved for one key client through the direct implementation of Lean Six Sigma.</li><li><strong>30% Reduction in Client Onboarding Time:</strong> Improved internal firm efficiency and client satisfaction via a redesigned process.</li></ul><h2>Key Lessons Learned</h2><p>Effective consulting requires balancing an external, objective viewpoint with a deep, empathetic understanding of the client's internal culture and operational constraints. The best solutions are co-created with the client, not just presented to them.</p></div></div></div></div>
 
         
         <!-- Business Analytics Case Studies -->
         <div id="ba-1" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">E-commerce Customer Segmentation</h1>
-                    <p class="text-lg text-gray-400">Leveraging data to drive targeted marketing and enhance customer lifetime value.</p>
-                </div>
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
+                <div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">E-commerce Customer Segmentation</h1><p class="text-lg text-gray-500">Leveraging data to drive targeted marketing and enhance customer lifetime value.</p></div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Diagnostic Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Freelance Consulting</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>SQL (PostgreSQL)</span></p>
-                            <p><span>Tableau</span></p>
-                            <p><span>RFM Analysis</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>An e-commerce client struggled with generic, one-size-fits-all marketing campaigns that resulted in low engagement and a poor return on investment. The core business challenge was a lack of understanding of their diverse customer base, preventing them from personalizing their marketing efforts effectively.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>I employed a diagnostic and descriptive analytics approach. The primary method was Recency, Frequency, and Monetary (RFM) analysis to segment customers based on their purchasing behavior. The tools used were SQL for data extraction and preparation from the company's transactional database, and Tableau for visualizing the segments and creating an interactive dashboard for the marketing team.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>The process involved extracting two years of sales data, cleaning it, and then calculating RFM scores for each customer. Through clustering, I identified five distinct segments, including "High-Value Champions," "Loyal Customers," and "At-Risk Customers." The key finding was that 15% of customers ("Champions") accounted for nearly 50% of the total revenue, while a significant "At-Risk" group had not purchased in over six months.</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>The analysis provided a clear, data-driven path to shift from mass marketing to a personalized strategy. Insights included prioritizing retention efforts on the "At-Risk" segment and creating a loyalty program for "Champions." The final deliverable was an interactive Tableau dashboard that allowed the marketing team to explore each segment's characteristics and export targeted customer lists for campaigns, leading to a <strong>15% increase in marketing ROI</strong> and a <strong>10% lift in customer lifetime value.</strong></p>
-                        <div class="visual-container mt-8">
-                            <img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Tableau+Dashboard+-+RFM+Segments" alt="Tableau Dashboard" class="rounded-lg my-4 border border-gray-700 w-full">
-                        </div>
-                    </div>
+                    <div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Freelance Consulting</span></p><p><strong>My Role:</strong> <span>Business Analyst</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>SQL, Tableau, RFM Analysis</span></p></div></div>
+                    <div class="lg:col-span-2 case-study-content"><h2>Business Problem</h2><p>An e-commerce client's generic marketing campaigns resulted in low engagement and poor ROI. They lacked a deep understanding of their customer base, preventing effective personalization.</p>
+                    <h2>Challenges & My Approach</h2><p>The primary challenge was translating complex data into a simple, usable tool for a non-technical marketing team. I used SQL for the heavy lifting (RFM analysis) but focused on delivering the final output as an intuitive, interactive Tableau dashboard. I ran a training session with the marketing team to ensure they were comfortable using the dashboard to create and export targeted customer lists independently.</p>
+                    <h2>Outcomes & Impact</h2><p>The dashboard enabled a shift from mass marketing to a personalized strategy. Key outcomes included a <strong>15% increase in marketing ROI</strong> and a <strong>10% lift in customer lifetime value</strong> by targeting "At-Risk" customers with tailored promotions.</p>
+                    <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Tableau+Dashboard+-+RFM+Segments" alt="Tableau Dashboard" class="rounded-lg my-4 border border-gray-200 w-full"></div>
+                    <h2>Key Lessons Learned</h2><p>The final deliverable for an analytics project is not the analysis itself, but the enablement of the end-user. Success is measured by whether the stakeholders can use your work to make better decisions long after the project is finished.</p></div>
                 </div>
             </div>
         </div>
         
         <div id="ba-2" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Live Warehouse Operations Dashboard</h1>
-                    <p class="text-lg text-gray-400">Transforming raw ERP data into actionable, real-time insights for warehouse management.</p>
-                </div>
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
+                <div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Live Warehouse Operations Dashboard</h1><p class="text-lg text-gray-500">Transforming raw ERP data into actionable, real-time insights for warehouse management.</p></div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Descriptive Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Business Intelligence (BI)</span></p>
-                            <p><span>Dashboard & UI/UX Design</span></p>
-                            <p><span>Oracle ERP</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>The warehouse management team was flying blind, lacking real-time visibility into key performance indicators (KPIs). Their reliance on slow, manual report creation from raw Oracle data meant that by the time they had insights, it was often too late to act. The strategic challenge was to transform this reactive data gathering into a proactive, data-driven management culture.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>This was a descriptive analytics project focused on creating a "single source of truth." I designed a comprehensive BI dashboard to connect directly to the Oracle ERP database. The approach was to translate complex business questions into specific, measurable KPIs and visualize them in an intuitive, multi-tabbed interface, enabling at-a-glance understanding of performance.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>I authored the functional requirements document that served as the blueprint for development. This involved interviewing stakeholders to define over 25 critical KPIs (e.g., 'GRN creation time', 'QC inspection delays'). The key finding from the initial data pull was that nearly 15% of inbound deliveries were breaching the 48-hour GRN creation target, a previously invisible bottleneck.</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>The dashboard shifted the team's focus from "what happened?" to "what is happening now?". It empowered managers to address issues like GRN delays proactively. The key deliverable was the detailed functional requirements document, including UI mockups and logic for over 15 drill-down reports and automated email alerts. The implemented solution <strong>eliminated hours of daily manual reporting</strong> and provided the clarity needed for <strong>more effective resource planning and productivity improvements.</strong></p>
-                        <div class="visual-container mt-8">
-                            <img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Warehouse+KPI+Dashboard+Design" alt="Warehouse Dashboard" class="rounded-lg my-4 border border-gray-700 w-full">
-                        </div>
-                    </div>
+                    <div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Multinational Energy Firm</span></p><p><strong>My Role:</strong> <span>Business Analyst</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>BI, Dashboard Design, Oracle ERP</span></p></div></div>
+                    <div class="lg:col-span-2 case-study-content"><h2>Business Problem</h2><p>The warehouse management team lacked real-time visibility into KPIs, relying on slow, manual reports. This reactive process meant that by the time they had insights, it was often too late to act.</p>
+                    <h2>Challenges & My Approach</h2><p>The challenge was defining what to measure. The team had dozens of potential metrics. I led a series of stakeholder interviews to narrow down the list to the "vital few" KPIs that truly drove business value (e.g., 'GRN creation time', 'QC inspection delays'). This focus ensured the final dashboard was clean, uncluttered, and centered on the most actionable information.</p>
+                    <h2>Outcomes & Impact</h2><p>The dashboard shifted the team from reactive to proactive management. It <strong>eliminated hours of daily manual reporting</strong> and provided the clarity needed for more effective resource planning, directly addressing bottlenecks like a 15% breach rate on the 48-hour GRN target.</p>
+                    <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Warehouse+KPI+Dashboard+Design" alt="Warehouse Dashboard" class="rounded-lg my-4 border border-gray-200 w-full"></div>
+                    <h2>Key Lessons Learned</h2><p>More data is not always better data. The most valuable analytics work often involves filtering out the noise to focus stakeholders on the few key metrics that have the greatest impact on their goals.</p></div>
                 </div>
             </div>
         </div>
+        
+        <!-- Placeholder Case Studies for BA -->
+        <div id="ba-3" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Digital Inventory Cycle Count System</h1><p class="text-lg text-gray-500">Re-engineering a manual process to save time and eliminate errors.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        <div id="ba-4" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Oracle DO Register & GRN Automation</h1><p class="text-lg text-gray-500">Closing data gaps for complete traceability and automated KPI tracking.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        <div id="ba-5" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Welding Consumable Traceability System</h1><p class="text-lg text-gray-500">Digitizing a manual process with a barcode and mobile app solution.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        <div id="ba-6" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Warehouse Inventory System Standardization</h1><p class="text-lg text-gray-500">Redesigning an Oracle Inventory structure for data-driven planning.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        <div id="ba-7" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">End-to-End Material Traceability Reporting</h1><p class="text-lg text-gray-500">Creating a single source of truth for a material's lifecycle in Oracle.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        <div id="ba-8" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">QR Code-Based Digital Warehouse System</h1><p class="text-lg text-gray-500">Digitizing warehouse operations with QR codes and a mobile app.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        <div id="ba-9" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Automated Shelf-Life & Expiry Tracking System</h1><p class="text-lg text-gray-500">Mitigating risk and ensuring compliance with an automated Oracle system.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        
+    </div>
 
-        <div id="ba-3" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Digital Inventory Cycle Count System</h1>
-                    <p class="text-lg text-gray-400">Re-engineering a manual, paper-based process to save time and improve data accuracy.</p>
+    <!-- AI Chat Modal -->
+    <div id="ai-chat-modal" class="ai-modal">
+        <div class="ai-chat-container">
+            <div class="ai-chat-header">
+                <div>
+                    <h3 class="font-bold text-lg">AI-Powered Interview</h3>
+                    <p class="text-sm text-gray-500">with Jackson Mathew's Digital Twin</p>
                 </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Prescriptive Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Process Re-engineering (BPR)</span></p>
-                            <p><span>UI/UX Design</span></p>
-                            <p><span>Cost-Benefit Analysis</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>The company's inventory cycle count was a highly inefficient, paper-based process involving printouts, manual checks, and manual data re-entry. This workflow was not only slow and labor-intensive but also highly susceptible to data entry errors, which compromised inventory accuracy and financial reporting.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>My approach was prescriptive, focusing on designing an optimized future-state process. I conducted a time-and-motion study of the existing workflow to quantify inefficiencies. The data (structured process timings) was used to build a business case and design a new, fully digital system. The solution prescribed a tablet-based application for live data entry on the warehouse floor.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>I mapped the "as-is" process and identified that manual data entry and discrepancy reconciliation accounted for over 40% of the total time. My analysis projected that a digital system could eliminate these non-value-added steps entirely. The key finding was that digitizing the process would <strong>reduce the total cycle count time by 55%</strong>, saving the equivalent of <strong>25 man-days per year.</strong></p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>This project demonstrated how digital transformation of a single, core process could yield significant operational and financial benefits. The strategic insight was to invest in mobile technology to empower frontline workers, improving both efficiency and data integrity. My primary deliverable was the functional requirements document, including the cost-benefit analysis and UI mockups for the new tablet application, which became the blueprint for the digital solution.</p>
-                        <div class="visual-container mt-8">
-                            <img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Digital+Cycle+Count+App+UI" alt="Cycle Count App UI" class="rounded-lg my-4 border border-gray-700 w-full">
-                        </div>
-                    </div>
-                </div>
+                <button id="close-ai-chat-btn" class="text-gray-500 hover:text-black">&times;</button>
             </div>
-        </div>
-
-        <div id="ba-4" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Oracle DO Register & GRN Automation</h1>
-                    <p class="text-lg text-gray-400">Enhancing Oracle ERP to enable KPI tracking and complete material traceability.</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Strategic Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Oracle ERP Customization</span></p>
-                            <p><span>Gap Analysis</span></p>
-                            <p><span>Process Automation</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>The company had a critical business KPI: creating a Goods Received Note (GRN) within 48 hours of material arrival. However, it was impossible to measure this KPI accurately because the Oracle ERP system had no function to log the initial physical receipt of a Delivery Order (DO). This data gap created a strategic blind spot in performance management and operational traceability.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>The approach was strategic analytics, focused on identifying and closing a critical system gap to enable performance measurement. I conducted a thorough gap analysis of the existing material receiving workflow within Oracle. This led to the design of a new module to capture the missing data point, thereby creating a reliable dataset for KPI calculation.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>Through process mapping, I confirmed that the crucial "time of physical receipt" was recorded on paper but never entered into the system. The key finding was that a small, targeted enhancement to the ERP—a new 'DO Register' screen—could solve this fundamental problem. This new screen would timestamp the arrival and serve as the starting point for the automated 48-hour KPI clock.</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>This project highlighted how a small data gap can render a key strategic objective untraceable. By creating a system to capture this data, we enabled data-driven performance management for the entire receiving process. My deliverable was the complete functional requirements for the new Oracle module, including screen designs, workflow logic, and the specification for automated KPI reports and email alerts. This provided <strong>complete traceability from the moment a truck arrived at the gate.</strong></p>
-                        <div class="visual-container mt-8">
-                            <img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Oracle+DO+Register+Screen+Design" alt="Oracle Screen Design" class="rounded-lg my-4 border border-gray-700 w-full">
-                        </div>
-                    </div>
-                </div>
+            <div id="ai-chat-history" class="ai-chat-history">
+                <!-- Chat messages will be appended here -->
             </div>
+            <form id="ai-chat-form" class="ai-chat-form">
+                <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Ask a question..." autocomplete="off">
+                <button type="submit" class="ai-chat-send">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </form>
         </div>
-
-        <div id="ba-5" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Welding Consumable Traceability System</h1>
-                    <p class="text-lg text-gray-400">Automating a critical manufacturing process to enhance accuracy and save costs.</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Prescriptive Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Process Automation</span></p>
-                            <p><span>Gap Analysis</span></p>
-                            <p><span>Oracle ERP</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>The system for tracking welding consumables was entirely manual, relying on handwritten log sheets. This process was not only slow, averaging 5 minutes per transaction, but also resulted in frequent errors and data gaps, which were repeatedly flagged in audits. This inefficiency represented a significant operational cost and a compliance risk.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>A prescriptive analytics approach was used to design a new, automated workflow. I analyzed the existing manual process to quantify the time spent and error rates. The structured data from this analysis was used to build a business case for a new digital system using barcode/QR code scanning, prescribing a clear solution to the identified problems.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>By mapping the end-to-end process for all five transaction types (issue, return, etc.), I identified that manual writing and log-keeping were 100% non-value-added time. The key finding was that implementing a simple mobile scanning application could <strong>reduce the average transaction time from 5 minutes to under 30 seconds—a 90% improvement.</strong> The cost-benefit analysis showed projected annual savings of over $5,000 in labor, with savings on large projects exceeding $27,000.</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>This project demonstrated that even in a heavy industrial setting, simple digital tools can drive massive efficiency gains. The strategic insight was that automating data capture at the source eliminates errors and unlocks the potential of the core ERP system (Oracle). My deliverable was the functional requirements document, detailing the mobile app screens, label designs, and integration logic needed to <strong>fully automate the traceability process and eliminate manual logbooks.</strong></p>
-                        <div class="visual-container mt-8">
-                            <img src="https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Automated+Traceability+Process+Flow" alt="Process Flow" class="rounded-lg my-4 border border-gray-700 w-full">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="ba-6" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Warehouse Inventory System Standardization</h1>
-                    <p class="text-lg text-gray-400">Architecting a new data structure in Oracle ERP for efficient warehouse management.</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Strategic Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Industrial Manufacturing Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Oracle ERP</span></p>
-                            <p><span>Data Standardization</span></p>
-                            <p><span>Process Re-engineering</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>The company's Oracle Inventory system lacked a coherent structure. With duplicated locators and no defined hierarchy, it was impossible to get an accurate picture of warehouse space or capacity. This led to inefficient use of space, difficulty in locating materials, and an inability to perform any capacity planning.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>My approach was strategic, focusing on redesigning the foundational data architecture of the inventory system. The analysis involved auditing the existing disorganized structure, identifying all redundancies and logical inconsistencies. The solution was to create a new, standardized data model to serve as a robust foundation for all warehouse operations and future analytics.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>The analysis revealed over 20,000 locator entries, with thousands of duplicates. The key finding was that the lack of structure was the root cause of widespread inefficiency. I designed a new hierarchical model that separated physical and logical sub-inventories and introduced new data fields for locator type (e.g., Rack, Floor), area type (e.g., Indoor AC), and, crucially, physical capacity (dimensions and safe working load).</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>This project underscored the principle of "garbage in, garbage out." A clean, logical data structure is a prerequisite for efficient operations. The new system enabled, for the first time, true capacity management and data-driven material slotting. My deliverable was the functional requirements document that defined this new data model, providing the blueprint to <strong>transform the chaotic inventory system into an organized, analyzable asset.</strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="ba-7" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">End-to-End Material Traceability Reporting</h1>
-                    <p class="text-lg text-gray-400">Consolidating disparate Oracle data to create a unified view of the material lifecycle.</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Descriptive Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Industrial Manufacturing Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Business Intelligence (BI)</span></p>
-                            <p><span>Report Design</span></p>
-                            <p><span>Oracle ERP</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>To understand the full history of a single piece of material, a manager had to manually pull and cross-reference data from multiple, disconnected Oracle reports (MR, PO, GRN, MIN, etc.). This time-consuming process hindered quick decision-making and made it difficult to provide clients with a simple, consolidated status update for their materials.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>This was a descriptive analytics project aimed at data consolidation and visualization. The approach was to design a single, unified report that could programmatically join data from different Oracle modules based on a common identifier (e.g., Part ID, LEL ID). The goal was to present a chronological, easy-to-read history of every transaction related to an item.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>I analyzed the data schemas of the various Oracle modules to map the relationships between them. The key finding was that all the necessary data existed but was siloed. I designed a "Complete Traceability Report" that structured this data logically, from initial receipt through all transfers, returns, and final issuance. I also designed a simplified, client-facing "Material Register" for live status updates.</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>The project's insight is that the value of data is multiplied when it is connected. By breaking down data silos, we could provide a holistic view that was previously impossible to achieve efficiently. My deliverable was the functional requirements document for these new reports, which provided a <strong>single source of truth for the entire material lifecycle</strong> and significantly <strong>accelerated the time-to-insight for managers.</strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="ba-8" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">QR Code-Based Digital Warehouse System</h1>
-                    <p class="text-lg text-gray-400">Digitizing warehouse operations with a scannable labeling system and mobile application.</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Strategic & Prescriptive Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Industrial Manufacturing Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Digital Transformation</span></p>
-                            <p><span>Mobile Application Design</span></p>
-                            <p><span>QR Code Technology</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>Accessing inventory information on the warehouse floor was a major operational bottleneck. Staff had to leave their work area to use a desktop computer or rely on cumbersome printouts to get details about an item. This lack of immediate, point-of-use data slowed down critical tasks like cycle counting, auditing, and material picking.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>The approach was to prescribe a digital transformation solution for a key area (the pipe shop) to serve as a proof-of-concept. The analysis involved identifying the most critical data points needed by floor staff and designing the most efficient delivery mechanism. A QR code system paired with a mobile app was identified as the optimal, low-cost solution.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>I designed a multi-level QR labeling system: one for individual items (encoding Part ID), one for racks (encoding location), and one for parts bins (encoding Part ID). The key finding was that this structure allowed for maximum flexibility. Scanning a rack would show all contents, while scanning a bin would show its stock levels across the entire company. I designed the screen flows and UI for the companion mobile app to display this live Oracle data.</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>This project demonstrated that empowering frontline workers with real-time data is a powerful driver of efficiency. The QR code system acts as a simple, effective bridge between physical assets and their rich digital records in the ERP. My deliverable was the functional requirements document defining the entire system, from label design to the mobile app's UI/UX, creating a roadmap to <strong>digitize on-the-floor operations and enhance traceability.</strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="ba-9" class="page">
-            <div class="container mx-auto max-w-6xl text-white">
-                <button class="back-button mb-8 text-lg font-bold text-gray-300 hover:text-white transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Automated Shelf-Life & Expiry Tracking System</h1>
-                    <p class="text-lg text-gray-400">Integrating proactive expiry monitoring into Oracle ERP to prevent waste and ensure compliance.</p>
-                </div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1">
-                        <div class="case-study-sidebar sticky top-8">
-                            <h3>Project Snapshot</h3>
-                            <p><strong>Project Type:</strong> <span>Predictive & Prescriptive Analytics</span></p>
-                            <p><strong>Company:</strong> <span>Industrial Manufacturing Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Oracle ERP Customization</span></p>
-                            <p><span>Process Automation</span></p>
-                            <p><span>Risk Mitigation</span></p>
-                        </div>
-                    </div>
-                    <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>The company was manually tracking the shelf life of perishable consumables (paints, chemicals) in a physical logbook. This reactive process had no predictive capabilities, leading to a high risk of material expiring on the shelf, resulting in financial loss and non-compliance with quality procedures that required 6-monthly deterioration checks.</p>
-                        <h2>Analytical Approach</h2>
-                        <p>The approach was to build a predictive and prescriptive system within Oracle. The system would use the expiry date data to predict which items were at risk and prescribe actions via automated alerts. The analysis involved defining the business rules for these alerts (e.g., "notify 30 days before expiry") and designing the system enhancements to support them.</p>
-                        <h2>Process & Key Findings</h2>
-                        <p>The process began with designing new "Expiry Date" fields within Oracle's item creation and receiving screens to capture the data at its source. The key finding was that by making this a mandatory field for certain item categories, we could guarantee the data's availability. I then specified the logic for an automated reporting system and, most importantly, for an automated email notification system to proactively flag items nearing expiry.</p>
-                        <h2>Strategic Insights & Deliverables</h2>
-                        <p>This project showed that automation is a powerful tool for risk mitigation. By transforming a manual, reactive task into an automated, proactive system, we could prevent financial losses and ensure compliance with quality standards. My deliverable was the functional requirements document detailing the necessary Oracle screen modifications and the logic for the automated alerting system, effectively creating an <strong>early-warning system for inventory waste.</strong></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
 
@@ -1175,9 +1055,10 @@
             });
 
             window.addEventListener('scroll', () => {
-                header.classList.toggle('bg-black', window.scrollY > 50);
+                header.classList.toggle('bg-white', window.scrollY > 50);
                 header.classList.toggle('bg-opacity-80', window.scrollY > 50);
                 header.classList.toggle('backdrop-blur-sm', window.scrollY > 50);
+                header.classList.toggle('shadow-sm', window.scrollY > 50);
             });
 
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1204,10 +1085,6 @@
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        const animationType = entry.target.dataset.animation;
-                        if (animationType) {
-                           switchAnimation(animationType);
-                        }
                     }
                 });
             }, { threshold: 0.2 });
@@ -1216,7 +1093,10 @@
             // --- Project Page Click Handling ---
             document.querySelectorAll('.project-item').forEach(item => {
                 item.addEventListener('click', (e) => {
-                    const projectPage = document.getElementById(item.dataset.project);
+                    const projectId = item.dataset.project;
+                     // Hide all pages first
+                    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+                    const projectPage = document.getElementById(projectId);
                     if (projectPage) {
                         mainContent.style.display = 'none';
                         projectPage.style.display = 'block';
@@ -1271,215 +1151,230 @@
                         const image = visualContainer.querySelector('img');
                         const fileNameSpan = event.target.nextElementSibling;
 
-                        image.src = `https://placehold.co/1200x600/1a1a1a/e0e0e0?text=Attached:+${file.name}`;
+                        image.src = `https://placehold.co/1200x600/f4f7fa/1a202c?text=Attached:+${file.name}`;
                         fileNameSpan.textContent = file.name;
                     }
                 });
             });
 
 
-            // --- Three.js Background ---
-            let bgScene, bgCamera, bgRenderer;
-            let heroGroup, aboutGroup, timelineGroup, skillsGroup, worksGroup, contactGroup;
-            let currentAnimation = () => {};
-            let mouseX = 0, mouseY = 0;
-            const clock = new THREE.Clock();
+            // --- Interactive Mouse-Follow Background ---
+            // window.addEventListener('mousemove', e => {
+            //     document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+            //     document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+            // });
 
-            // --- Animation Creation Functions ---
-            function createHeroGroup() {
-                const group = new THREE.Group();
-                const positions = [];
-                const points = [];
-                const lineCount = 50;
-                for (let i = 0; i < lineCount; i++) {
-                    const x = (Math.random() - 0.5) * 100;
-                    const y = (Math.random() - 0.5) * 100;
-                    const z = (Math.random() - 0.5) * 100;
-                    points.push(new THREE.Vector3(x, y, z));
+            // --- Three.js 3D Background ---
+            let scene, camera, renderer, particles, lines;
+            let mouseX = 0, mouseY = 0;
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            function init3D() {
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.position.z = 400;
+
+                renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), alpha: true });
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setClearColor(0x000000, 0);
+
+                const particleCount = 150;
+                const particlesGeometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(particleCount * 3);
+
+                for (let i = 0; i < particleCount; i++) {
+                    positions[i * 3] = (Math.random() * 2 - 1) * 500;
+                    positions[i * 3 + 1] = (Math.random() * 2 - 1) * 500;
+                    positions[i * 3 + 2] = (Math.random() * 2 - 1) * 500;
                 }
-                for (let i = 0; i < points.length; i++) {
-                    for (let j = i + 1; j < points.length; j++) {
-                        if (points[i].distanceTo(points[j]) < 20) {
-                            positions.push(points[i].x, points[i].y, points[i].z);
-                            positions.push(points[j].x, points[j].y, points[j].z);
+                particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                const particleMaterial = new THREE.PointsMaterial({ color: 0x007bff, size: 2, transparent: true, opacity: 0.7 });
+                particles = new THREE.Points(particlesGeometry, particleMaterial);
+                scene.add(particles);
+
+                const linesGeometry = new THREE.BufferGeometry();
+                const linePositions = [];
+                for (let i = 0; i < particleCount; i++) {
+                    for (let j = i + 1; j < particleCount; j++) {
+                        const dx = positions[i * 3] - positions[j * 3];
+                        const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
+                        const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
+                        const distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+                        if (distance < 100) {
+                            linePositions.push(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+                            linePositions.push(positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]);
                         }
                     }
                 }
-                const lineGeo = new THREE.BufferGeometry();
-                lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-                const lineMat = new THREE.LineBasicMaterial({ color: 0x00f6ff, transparent: true, opacity: 0.2 });
-                const lines = new THREE.LineSegments(lineGeo, lineMat);
-                group.add(lines);
-                return group;
+                linesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+                const lineMaterial = new THREE.LineBasicMaterial({ color: 0x4a5568, transparent: true, opacity: 0.15 });
+                lines = new THREE.LineSegments(linesGeometry, lineMaterial);
+                scene.add(lines);
+
+                document.addEventListener('mousemove', onDocumentMouseMove, false);
+                window.addEventListener('resize', onWindowResize, false);
             }
 
-            function createAboutGroup() {
-                const group = new THREE.Group();
-                const particleCount = 2000;
-                const positions = new Float32Array(particleCount * 3);
-                for (let i = 0; i < particleCount * 3; i++) {
-                    positions[i] = (Math.random() - 0.5) * 100;
-                }
-                const geometry = new THREE.BufferGeometry();
-                geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-                const material = new THREE.PointsMaterial({ color: 0x00f6ff, size: 0.1, transparent: true, opacity: 0.5 });
-                const particles = new THREE.Points(geometry, material);
-                group.add(particles);
-                group.userData.particles = particles;
-                return group;
-            }
-            
-            function createTimelineGroup() {
-                const group = new THREE.Group();
-                const geometry = new THREE.IcosahedronGeometry(15, 1);
-                const material = new THREE.MeshBasicMaterial({ color: 0x00f6ff, wireframe: true, transparent: true, opacity: 0.15 });
-                const robotHead = new THREE.Mesh(geometry, material);
-                group.add(robotHead);
-                return group;
+            function onWindowResize() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             }
 
-            function createSkillsGroup() {
-                const group = new THREE.Group();
-                const gridSize = 10;
-                const spacing = 8;
-                const cubeSize = 3;
-                for(let i = 0; i < gridSize; i++) {
-                    for(let j = 0; j < gridSize; j++) {
-                        const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
-                        const material = new THREE.MeshBasicMaterial({ color: 0x00f6ff, wireframe: true, transparent: true, opacity: 0.2 });
-                        const cube = new THREE.Mesh(geometry, material);
-                        cube.position.set((i - gridSize/2) * spacing, (j - gridSize/2) * spacing, -30);
-                        group.add(cube);
-                    }
-                }
-                return group;
+            function onDocumentMouseMove(event) {
+                mouseX = (event.clientX - windowHalfX) / 10;
+                mouseY = (event.clientY - windowHalfY) / 10;
             }
 
-            function createWorksGroup() {
-                const group = new THREE.Group();
-                 for (let i = 0; i < 15; i++) {
-                    const geometry = new THREE.PlaneGeometry(Math.random() * 20 + 5, Math.random() * 20 + 5);
-                    const material = new THREE.MeshBasicMaterial({ color: 0x00f6ff, wireframe: true, side: THREE.DoubleSide, transparent: true, opacity: 0.1 });
-                    const plane = new THREE.Mesh(geometry, material);
-                    plane.position.set((Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80, (Math.random() - 0.5) * 80);
-                    plane.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-                    group.add(plane);
-                }
-                return group;
+            function animate3D() {
+                requestAnimationFrame(animate3D);
+
+                camera.position.x += (mouseX - camera.position.x) * .05;
+                camera.position.y += (-mouseY - camera.position.y) * .05;
+                camera.lookAt(scene.position);
+
+                const time = Date.now() * 0.0001;
+                particles.rotation.x = time;
+                particles.rotation.y = time;
+                lines.rotation.x = time;
+                lines.rotation.y = time;
+
+                renderer.render(scene, camera);
             }
             
-            function createContactGroup() {
-                const group = new THREE.Group();
-                const sphereGeo = new THREE.SphereGeometry(8, 16, 16);
-                const sphereMat = new THREE.MeshBasicMaterial({ color: 0x00f6ff, wireframe: true, transparent: true, opacity: 0.2 });
-                const sphere = new THREE.Mesh(sphereGeo, sphereMat);
-                group.add(sphere);
-                return group;
-            }
+            init3D();
+            animate3D();
 
-            // --- Animation Logic Functions ---
-            const animateHero = () => {
-                 if (heroGroup) {
-                     heroGroup.rotation.x += (mouseY * 0.1 - heroGroup.rotation.x) * 0.02;
-                     heroGroup.rotation.y += (mouseX * 0.1 - heroGroup.rotation.y) * 0.02;
-                }
-            };
-            const animateAbout = () => {
-                if (aboutGroup && aboutGroup.userData.particles) {
-                    const particles = aboutGroup.userData.particles;
-                    const positions = particles.geometry.attributes.position.array;
-                    for (let i = 1; i < positions.length; i += 3) {
-                        positions[i] -= 0.05;
-                        if (positions[i] < -50) positions[i] = 50;
+            // --- Gemini AI Chat Feature ---
+            const aiChatModal = document.getElementById('ai-chat-modal');
+            const startAiChatBtn = document.getElementById('start-ai-chat-btn');
+            const closeAiChatBtn = document.getElementById('close-ai-chat-btn');
+            const aiChatForm = document.getElementById('ai-chat-form');
+            const aiChatInput = document.getElementById('ai-chat-input');
+            const aiChatHistory = document.getElementById('ai-chat-history');
+            
+            let conversationHistory = [];
+
+            const systemPrompt = `You are the AI-powered digital twin of Jackson Mathew, a Product Manager. Your persona is professional, articulate, data-driven, and user-centric. You are to answer questions from the perspective of Jackson, based on the information provided in his portfolio.
+
+            **Jackson's Core Philosophy:** "Create value by solving real problems. The best products emerge from a deep understanding of user needs, validated by data, and brought to life through seamless cross-functional collaboration."
+
+            **Jackson's Experience Summary:**
+            - Over 6 years in project management, digital operations, and business analysis.
+            - Sectors: Energy, Tech, Consulting.
+            - Key Skills: Product Management (Roadmapping, GTM Strategy, Agile), Project Management, Operational Excellence (Lean Six Sigma), Business & Data Analysis.
+            - Key Projects:
+                1.  **Medical Device Management App:** Led development, boosting reporting accuracy by 30% with predictive analytics.
+                2.  **IoT-Based Climate Monitoring:** Replaced manual process, saving 2.5 hours of labor daily.
+                3.  **Forklift Fleet Optimization:** Used data analysis to identify $172K in annual savings.
+                4.  **Welder Performance Improvement:** A Lean Six Sigma project that identified $20K/month in savings.
+
+            **Your Task:**
+            1.  **Embody Jackson:** Respond to all questions as if you are him ("I believe...", "In my experience...", "My approach was...").
+            2.  **Use Portfolio Data:** Ground your answers in the projects and skills listed. For example, if asked about handling a challenge, you could reference the stakeholder management in the Medical Device App project.
+            3.  **Use the STAR method for behavioral questions:** (Situation, Task, Action, Result).
+            4.  **Keep answers concise and professional.** Do not make up experience you don't have. If a question is outside your knowledge base, politely state that your experience is focused on the areas detailed in the portfolio.
+            5.  Start the conversation with a friendly greeting.`;
+
+            function appendMessage(sender, text, isLoading = false) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('chat-bubble');
+                if (sender === 'user') {
+                    bubble.classList.add('user-bubble');
+                    bubble.textContent = text;
+                } else {
+                    bubble.classList.add('ai-bubble');
+                    if (isLoading) {
+                        bubble.classList.add('loading');
+                        const loadingIndicator = document.createElement('div');
+                        loadingIndicator.classList.add('dot-flashing');
+                        bubble.appendChild(loadingIndicator);
+                    } else {
+                         bubble.textContent = text;
                     }
-                    particles.geometry.attributes.position.needsUpdate = true;
                 }
-            };
-            const animateTimeline = () => {
-                if(timelineGroup) timelineGroup.rotation.y += 0.001;
-            };
-            const animateSkills = () => {
-                 if(skillsGroup) {
-                     const time = clock.getElapsedTime();
-                     skillsGroup.children.forEach((cube, i) => {
-                         cube.material.opacity = (Math.sin(time + i * 0.5) + 1) / 2 * 0.2 + 0.1;
-                         cube.rotation.x += 0.001;
-                         cube.rotation.y += 0.001;
-                     });
-                 }
-            };
-            const animateWorks = () => {
-                 if(worksGroup) {
-                     worksGroup.children.forEach(plane => {
-                         plane.rotation.x += 0.001;
-                         plane.rotation.y += 0.001;
-                     });
-                 }
-            };
-             const animateContact = () => {
-                if(contactGroup) {
-                    contactGroup.rotation.x += (mouseY * 0.2 - contactGroup.rotation.x) * 0.05;
-                    contactGroup.rotation.y += (mouseX * 0.2 - contactGroup.rotation.y) * 0.05;
-                }
-            };
+                aiChatHistory.appendChild(bubble);
+                aiChatHistory.scrollTop = aiChatHistory.scrollHeight;
+                return bubble;
+            }
 
+            async function callGeminiApi(userQuery) {
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
-            function switchAnimation(type) {
-                const groups = [heroGroup, aboutGroup, timelineGroup, skillsGroup, worksGroup, contactGroup];
-                groups.forEach(g => { if (g) g.visible = false; });
-                
-                switch(type) {
-                    case 'about': if(aboutGroup) aboutGroup.visible = true; currentAnimation = animateAbout; break;
-                    case 'timeline': if(timelineGroup) timelineGroup.visible = true; currentAnimation = animateTimeline; break;
-                    case 'skills': if(skillsGroup) skillsGroup.visible = true; currentAnimation = animateSkills; break;
-                    case 'works': if(worksGroup) worksGroup.visible = true; currentAnimation = animateWorks; break;
-                    case 'contact': if(contactGroup) contactGroup.visible = true; currentAnimation = animateContact; break;
-                    default: if(heroGroup) heroGroup.visible = true; currentAnimation = animateHero; break;
+                const loadingBubble = appendMessage('ai', '', true);
+
+                const payload = {
+                    contents: [
+                        ...conversationHistory,
+                        { role: "user", parts: [{ text: userQuery }] }
+                    ],
+                    systemInstruction: {
+                        parts: [{ text: systemPrompt }]
+                    },
+                };
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    const candidate = result.candidates?.[0];
+
+                    if (candidate && candidate.content?.parts?.[0]?.text) {
+                        const aiResponse = candidate.content.parts[0].text;
+                        loadingBubble.remove();
+                        appendMessage('ai', aiResponse);
+                        conversationHistory.push({ role: 'user', parts: [{ text: userQuery }] });
+                        conversationHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
+                    } else {
+                        throw new Error("Invalid response structure from API.");
+                    }
+                } catch (error) {
+                    console.error("Gemini API call failed:", error);
+                    loadingBubble.remove();
+                    appendMessage('ai', "I'm sorry, I'm having a bit of trouble connecting right now. Please try again in a moment.");
                 }
             }
 
 
-            function initBg() {
-                bgScene = new THREE.Scene();
-                bgCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                bgCamera.position.z = 50;
-                bgRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('bg-canvas'), antialias: true, alpha: true });
-                bgRenderer.setSize(window.innerWidth, window.innerHeight);
-                bgRenderer.setClearColor(0x000000, 0);
-
-                heroGroup = createHeroGroup();
-                aboutGroup = createAboutGroup();
-                timelineGroup = createTimelineGroup();
-                skillsGroup = createSkillsGroup();
-                worksGroup = createWorksGroup();
-                contactGroup = createContactGroup();
-                
-                bgScene.add(heroGroup, aboutGroup, timelineGroup, skillsGroup, worksGroup, contactGroup);
-
-                switchAnimation('hero'); // Start with hero animation
-
-                animateBg();
-            }
-
-            document.addEventListener('mousemove', (event) => {
-                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            startAiChatBtn.addEventListener('click', () => {
+                aiChatModal.classList.add('visible');
+                aiChatHistory.innerHTML = '';
+                conversationHistory = [];
+                appendMessage('ai', "Hello! I'm Jackson's AI-powered digital twin. I'm here to answer any questions you have about his experience and approach to product management. What's on your mind?");
             });
 
-            function animateBg() {
-                requestAnimationFrame(animateBg);
-                currentAnimation();
-                bgRenderer.render(bgScene, bgCamera);
-            }
+            closeAiChatBtn.addEventListener('click', () => {
+                aiChatModal.classList.remove('visible');
+            });
             
-            function onWindowResize() {
-                bgCamera.aspect = window.innerWidth / window.innerHeight;
-                bgCamera.updateProjectionMatrix();
-                bgRenderer.setSize(window.innerWidth, window.innerHeight);
-            }
-            window.addEventListener('resize', onWindowResize);
+            aiChatModal.addEventListener('click', (e) => {
+                if (e.target === aiChatModal) {
+                    aiChatModal.classList.remove('visible');
+                }
+            });
 
-            initBg();
+
+            aiChatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const userQuery = aiChatInput.value.trim();
+                if (userQuery) {
+                    appendMessage('user', userQuery);
+                    callGeminiApi(userQuery);
+                    aiChatInput.value = '';
+                }
+            });
+
         });
     </script>
 
