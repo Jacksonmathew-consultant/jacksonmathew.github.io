@@ -1250,7 +1250,10 @@
             
             let conversationHistory = [];
 
-            const portfolioContext = `
+            const systemPrompt = `You are the AI-powered digital twin of Jackson Mathew, a Product Manager. Your persona is professional, articulate, data-driven, and user-centric. You are to answer questions from the perspective of Jackson, based ONLY on the information provided below.
+
+            **PORTFOLIO CONTEXT:**
+            ---
             **My Philosophy:** My philosophy is rooted in a simple principle: create value by solving real problems. The best products emerge from a deep understanding of user needs, validated by data, and brought to life through seamless cross-functional collaboration.
 
             **Professional Journey:**
@@ -1277,9 +1280,13 @@
             - Forklift Fleet Optimization: Used data analysis to identify $172K in annual savings.
             - Welder Performance Improvement: A Lean Six Sigma project that identified $20K/month in savings.
             - Scrap Metal Value Recovery: Turned operational waste into a $30K+ annual revenue stream.
-            `;
+            ---
 
-            const systemPrompt = `You are the AI-powered digital twin of Jackson Mathew, a Product Manager. Your persona is professional, articulate, data-driven, and user-centric. Ground all your answers in the portfolio context provided in the conversation history. Respond to all questions as if you are him ("I believe...", "In my experience..."). When asked behavioral questions, use the STAR method (Situation, Task, Action, Result) and reference specific projects from the context. Keep your answers concise and professional. Do not invent experience; if a question is outside the provided context, politely state that your knowledge is based on the portfolio.`;
+            **YOUR TASK:**
+            1.  **Embody Jackson:** Respond to all questions as if you are him ("I believe...", "In my experience...", "My approach was...").
+            2.  **Use Portfolio Data:** Ground your answers in the projects and skills listed above. For example, if asked about handling a challenge, you could reference the stakeholder management in the Medical Device App project.
+            3.  **Use the STAR method for behavioral questions:** (Situation, Task, Action, Result).
+            4.  **Keep answers concise and professional.** Do not make up experience you don't have. If a question is outside your knowledge base, politely state that your experience is focused on the areas detailed in the portfolio.`;
 
             function appendMessage(sender, text, isLoading = false) {
                 const bubble = document.createElement('div');
@@ -1309,14 +1316,11 @@
 
                 const loadingBubble = appendMessage('ai', '', true);
 
-                // Add the new user query to the existing history for the payload
-                const payloadContents = [
-                    ...conversationHistory,
-                    { role: "user", parts: [{ text: userQuery }] }
-                ];
-
                 const payload = {
-                    contents: payloadContents,
+                    contents: [
+                        ...conversationHistory,
+                        { role: "user", parts: [{ text: userQuery }] }
+                    ],
                     systemInstruction: {
                         parts: [{ text: systemPrompt }]
                     },
@@ -1340,7 +1344,6 @@
                         const aiResponse = candidate.content.parts[0].text;
                         loadingBubble.remove();
                         appendMessage('ai', aiResponse);
-                        // Update the conversation history with both the user's query and the AI's response
                         conversationHistory.push({ role: 'user', parts: [{ text: userQuery }] });
                         conversationHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
                     } else {
@@ -1356,26 +1359,8 @@
             startAiChatBtn.addEventListener('click', () => {
                 aiChatModal.classList.add('visible');
                 aiChatHistory.innerHTML = '';
-                
-                const initialGreeting = "Hello! I'm Jackson's AI-powered digital twin. I'm here to answer any questions you have about his experience and approach to product management. What's on your mind?";
-                appendMessage('ai', initialGreeting);
-
-                // Prime the conversation history with the context and the AI's opening message.
-                // This is a more robust way to provide context to the model.
-                conversationHistory = [
-                    {
-                        role: 'user',
-                        parts: [{ text: `Here is the context about Jackson Mathew's portfolio. Use this information to answer my questions as if you are him. CONTEXT: ${portfolioContext}` }]
-                    },
-                    {
-                        role: 'model',
-                        parts: [{ text: "Understood. I am ready to answer questions based on the provided portfolio context." }]
-                    }
-                ];
-                // We show a friendlier greeting in the UI.
-                aiChatHistory.innerHTML = '';
-                appendMessage('ai', initialGreeting);
-
+                conversationHistory = [];
+                appendMessage('ai', "Hello! I'm Jackson's AI-powered digital twin. I'm here to answer any questions you have about his experience and approach to product management. What's on your mind?");
             });
 
             closeAiChatBtn.addEventListener('click', () => {
