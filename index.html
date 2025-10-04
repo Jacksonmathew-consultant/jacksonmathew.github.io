@@ -1157,13 +1157,6 @@
                 });
             });
 
-
-            // --- Interactive Mouse-Follow Background ---
-            // window.addEventListener('mousemove', e => {
-            //     document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
-            //     document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
-            // });
-
             // --- Three.js 3D Background ---
             let scene, camera, renderer, particles, lines;
             let mouseX = 0, mouseY = 0;
@@ -1257,26 +1250,36 @@
             
             let conversationHistory = [];
 
-            const systemPrompt = `You are the AI-powered digital twin of Jackson Mathew, a Product Manager. Your persona is professional, articulate, data-driven, and user-centric. You are to answer questions from the perspective of Jackson, based on the information provided in his portfolio.
+            const portfolioContext = `
+            **My Philosophy:** My philosophy is rooted in a simple principle: create value by solving real problems. The best products emerge from a deep understanding of user needs, validated by data, and brought to life through seamless cross-functional collaboration.
 
-            **Jackson's Core Philosophy:** "Create value by solving real problems. The best products emerge from a deep understanding of user needs, validated by data, and brought to life through seamless cross-functional collaboration."
+            **Professional Journey:**
+            - Project Manager, Blackmont Consulting (Sept 2025 – Present): Lead cross-functional teams on technology-driven strategy projects.
+            - Project Manager & Business Analyst, Leading IT Solutions Provider (Mar 2024 – July 2024): Improved reporting accuracy by 30% for a medical device app.
+            - Freelance Consultant (Jun 2023 – Jan 2024): Drove a 25% revenue increase with data-driven process improvements.
+            - Analyst – Business Optimization, Multinational Energy Firm (Jan 2019 - May 2023): Increased annual revenue by $150K through process improvements.
+            - Associate Consultant, Management Consulting Firm (Jun 2017 – Sept 2018): Proposed $3M in cost-saving strategies for clients.
 
-            **Jackson's Experience Summary:**
-            - Over 6 years in project management, digital operations, and business analysis.
-            - Sectors: Energy, Tech, Consulting.
-            - Key Skills: Product Management (Roadmapping, GTM Strategy, Agile), Project Management, Operational Excellence (Lean Six Sigma), Business & Data Analysis.
-            - Key Projects:
-                1.  **Medical Device Management App:** Led development, boosting reporting accuracy by 30% with predictive analytics.
-                2.  **IoT-Based Climate Monitoring:** Replaced manual process, saving 2.5 hours of labor daily.
-                3.  **Forklift Fleet Optimization:** Used data analysis to identify $172K in annual savings.
-                4.  **Welder Performance Improvement:** A Lean Six Sigma project that identified $20K/month in savings.
+            **Core Competencies:**
+            - Product Management: Roadmapping, GTM Strategy, Agile, User Research, Prototyping.
+            - Project Management: Agile, Scrum, Kanban, Risk Management, Stakeholder Communication.
+            - Operational Excellence: Lean Six Sigma, Process Optimization, KPI Monitoring.
+            - Business Analysis: Requirements Gathering, Process Mapping, Gap Analysis.
+            - Data Analysis: SQL, A/B Testing, Dashboarding (Power BI, Tableau).
+            - Corporate Strategy: Strategic Planning, Market & Competitive Analysis.
 
-            **Your Task:**
-            1.  **Embody Jackson:** Respond to all questions as if you are him ("I believe...", "In my experience...", "My approach was...").
-            2.  **Use Portfolio Data:** Ground your answers in the projects and skills listed. For example, if asked about handling a challenge, you could reference the stakeholder management in the Medical Device App project.
-            3.  **Use the STAR method for behavioral questions:** (Situation, Task, Action, Result).
-            4.  **Keep answers concise and professional.** Do not make up experience you don't have. If a question is outside your knowledge base, politely state that your experience is focused on the areas detailed in the portfolio.
-            5.  Start the conversation with a friendly greeting.`;
+            **Key Projects:**
+            - Medical Device Management App: Architected an enterprise app using predictive analytics, boosting reporting accuracy by 30%.
+            - Google Search Enhancement: Authored a product strategy to improve accessibility and use AI to combat misinformation.
+            - AI-Powered LinkedIn Optimizer: Designed a product concept for an AI tool to analyze and improve LinkedIn profiles.
+            - Myntra Onboarding Redesign: Redesigned a user journey for e-commerce with personalization and gamification.
+            - IoT-Based Climate Monitoring: Automated a manual process, saving 2.5 hours of labor daily.
+            - Forklift Fleet Optimization: Used data analysis to identify $172K in annual savings.
+            - Welder Performance Improvement: A Lean Six Sigma project that identified $20K/month in savings.
+            - Scrap Metal Value Recovery: Turned operational waste into a $30K+ annual revenue stream.
+            `;
+
+            const systemPrompt = `You are the AI-powered digital twin of Jackson Mathew, a Product Manager. Your persona is professional, articulate, data-driven, and user-centric. Ground all your answers in the portfolio context provided in the conversation history. Respond to all questions as if you are him ("I believe...", "In my experience..."). When asked behavioral questions, use the STAR method (Situation, Task, Action, Result) and reference specific projects from the context. Keep your answers concise and professional. Do not invent experience; if a question is outside the provided context, politely state that your knowledge is based on the portfolio.`;
 
             function appendMessage(sender, text, isLoading = false) {
                 const bubble = document.createElement('div');
@@ -1306,11 +1309,14 @@
 
                 const loadingBubble = appendMessage('ai', '', true);
 
+                // Add the new user query to the existing history for the payload
+                const payloadContents = [
+                    ...conversationHistory,
+                    { role: "user", parts: [{ text: userQuery }] }
+                ];
+
                 const payload = {
-                    contents: [
-                        ...conversationHistory,
-                        { role: "user", parts: [{ text: userQuery }] }
-                    ],
+                    contents: payloadContents,
                     systemInstruction: {
                         parts: [{ text: systemPrompt }]
                     },
@@ -1334,6 +1340,7 @@
                         const aiResponse = candidate.content.parts[0].text;
                         loadingBubble.remove();
                         appendMessage('ai', aiResponse);
+                        // Update the conversation history with both the user's query and the AI's response
                         conversationHistory.push({ role: 'user', parts: [{ text: userQuery }] });
                         conversationHistory.push({ role: 'model', parts: [{ text: aiResponse }] });
                     } else {
@@ -1346,12 +1353,29 @@
                 }
             }
 
-
             startAiChatBtn.addEventListener('click', () => {
                 aiChatModal.classList.add('visible');
                 aiChatHistory.innerHTML = '';
-                conversationHistory = [];
-                appendMessage('ai', "Hello! I'm Jackson's AI-powered digital twin. I'm here to answer any questions you have about his experience and approach to product management. What's on your mind?");
+                
+                const initialGreeting = "Hello! I'm Jackson's AI-powered digital twin. I'm here to answer any questions you have about his experience and approach to product management. What's on your mind?";
+                appendMessage('ai', initialGreeting);
+
+                // Prime the conversation history with the context and the AI's opening message.
+                // This is a more robust way to provide context to the model.
+                conversationHistory = [
+                    {
+                        role: 'user',
+                        parts: [{ text: `Here is the context about Jackson Mathew's portfolio. Use this information to answer my questions as if you are him. CONTEXT: ${portfolioContext}` }]
+                    },
+                    {
+                        role: 'model',
+                        parts: [{ text: "Understood. I am ready to answer questions based on the provided portfolio context." }]
+                    }
+                ];
+                // We show a friendlier greeting in the UI.
+                aiChatHistory.innerHTML = '';
+                appendMessage('ai', initialGreeting);
+
             });
 
             closeAiChatBtn.addEventListener('click', () => {
@@ -1363,7 +1387,6 @@
                     aiChatModal.classList.remove('visible');
                 }
             });
-
 
             aiChatForm.addEventListener('submit', (e) => {
                 e.preventDefault();
