@@ -6,16 +6,23 @@
     <title>Jackson Mathew - Product Management Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Lucide Icons for the Sun/Moon -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --light-bg: #f4f7fa;
+            --dark-bg: #0f172a; /* Slate 900 */
             --primary-text: #1a202c;
+            --primary-text-dark: #f8fafc; /* Slate 50 */
             --secondary-text: #4a5568;
+            --secondary-text-dark: #cbd5e1; /* Slate 300 */
             --accent: #007bff;
             --accent-glow: rgba(0, 123, 255, 0.2);
             --card-bg: rgba(255, 255, 255, 0.7);
+            --card-bg-dark: rgba(30, 41, 59, 0.7); /* Slate 800 */
             --border-color: rgba(0, 0, 0, 0.1);
+            --border-color-dark: rgba(255, 255, 255, 0.1);
         }
         html {
             scroll-behavior: smooth;
@@ -26,7 +33,88 @@
             color: var(--primary-text);
             overflow-x: hidden;
             position: relative;
+            transition: background-color 0.5s ease, color 0.5s ease;
         }
+        
+        /* --- Dark Mode Overrides --- */
+        body.dark-mode {
+            background-color: var(--dark-bg);
+            color: var(--primary-text-dark);
+            --card-bg: var(--card-bg-dark);
+            --border-color: var(--border-color-dark);
+            --secondary-text: var(--secondary-text-dark);
+        }
+        
+        /* Override Tailwind classes in Dark Mode */
+        body.dark-mode .text-gray-600, 
+        body.dark-mode .text-gray-700,
+        body.dark-mode .text-gray-500 {
+            color: var(--secondary-text-dark);
+        }
+        
+        body.dark-mode .bg-white {
+            background-color: #1e293b; /* Slate 800 */
+            color: var(--primary-text-dark);
+        }
+        
+        body.dark-mode .text-black {
+            color: white;
+        }
+
+        /* Keep logos with white backgrounds so they are visible */
+        body.dark-mode .timeline-logo-container,
+        body.dark-mode .timeline-logo {
+            background-color: #ffffff;
+            border-color: var(--border-color-dark);
+        }
+
+        /* Dark Mode Mobile Menu */
+        body.dark-mode #mobile-menu {
+            background-color: #1e293b;
+        }
+        body.dark-mode #mobile-menu a {
+            color: var(--primary-text-dark);
+        }
+
+        /* Dark Mode Modal */
+        body.dark-mode .ai-chat-container {
+            background-color: #1e293b;
+            border: 1px solid var(--border-color-dark);
+        }
+        body.dark-mode .ai-chat-header {
+            border-bottom-color: var(--border-color-dark);
+        }
+        body.dark-mode .ai-chat-form {
+            border-top-color: var(--border-color-dark);
+        }
+        body.dark-mode .ai-chat-input {
+            background-color: #0f172a;
+            color: white;
+            border-color: var(--border-color-dark);
+        }
+        body.dark-mode .ai-bubble {
+            background-color: #334155;
+            color: white;
+        }
+        body.dark-mode .suggestion-chip {
+            background-color: #334155;
+            border-color: var(--border-color-dark);
+            color: var(--secondary-text-dark);
+        }
+        body.dark-mode .suggestion-chip:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+        body.dark-mode .page {
+            background-color: rgba(15, 23, 42, 0.98); /* Dark overlay for pages */
+        }
+        body.dark-mode footer {
+            background-color: #1e293b;
+            border-top-color: var(--border-color-dark);
+        }
+
+        /* --- End Dark Mode Overrides --- */
+
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -48,6 +136,17 @@
             z-index: 9999;
             transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
         }
+        body.dark-mode .loader {
+            background-color: var(--dark-bg);
+        }
+        body.dark-mode .loader .text-black {
+            color: var(--primary-text-dark);
+        }
+        body.dark-mode .loader .border-gray-800 {
+            border-color: var(--primary-text-dark);
+            border-top-color: transparent;
+        }
+
         .loader.hidden {
             opacity: 0;
             visibility: hidden;
@@ -67,6 +166,13 @@
         .nav-link:hover {
             color: var(--primary-text);
         }
+        body.dark-mode .nav-link {
+            color: var(--secondary-text-dark);
+        }
+        body.dark-mode .nav-link:hover {
+            color: white;
+        }
+
         .nav-link::after {
             content: '';
             position: absolute;
@@ -224,9 +330,16 @@
             color: var(--secondary-text);
             transition: all 0.2s ease;
         }
+        body.dark-mode .project-tags span {
+            background-color: #1e293b;
+            color: var(--secondary-text-dark);
+        }
         .project-item:hover .project-tags span {
              color: var(--primary-text);
              border-color: var(--accent);
+        }
+        body.dark-mode .project-item:hover .project-tags span {
+            color: white;
         }
         .project-btn {
             background-color: var(--accent);
@@ -261,12 +374,21 @@
             transition: all 0.3s ease;
             cursor: pointer;
         }
+        body.dark-mode .tab-btn {
+            color: var(--secondary-text-dark);
+        }
         .tab-btn:hover {
             color: var(--primary-text);
+        }
+        body.dark-mode .tab-btn:hover {
+            color: white;
         }
         .tab-btn.active {
             color: var(--accent);
             border-bottom-color: var(--accent);
+        }
+        body.dark-mode .tab-btn.active {
+            color: var(--accent);
         }
         .tab-content {
             display: none;
@@ -282,21 +404,96 @@
         .timeline-item.visible { opacity: 1; transform: translateY(0); }
         .timeline-item:nth-child(odd) { left: 0; }
         .timeline-item:nth-child(even) { left: 50%; }
-        .timeline-item::after { content: ''; position: absolute; width: 20px; height: 20px; right: -10px; background-color: var(--light-bg); border: 4px solid var(--accent); top: 15px; border-radius: 50%; z-index: 1; }
+        
+        .timeline-item::after { 
+            content: ''; position: absolute; width: 20px; height: 20px; 
+            right: -10px; background-color: var(--light-bg); border: 4px solid var(--accent); 
+            top: 25px; border-radius: 50%; z-index: 1; 
+        }
+        body.dark-mode .timeline-item::after {
+            background-color: var(--dark-bg);
+        }
         .timeline-item:nth-child(even)::after { left: -10px; }
+        
         .timeline-content { padding: 20px 30px; background-color: var(--card-bg); border: 1px solid var(--border-color); position: relative; border-radius: 8px; transition: all 0.3s ease; }
         .timeline-item:hover .timeline-content { transform: scale(1.03); border-color: var(--accent); box-shadow: 0 0 25px var(--accent-glow); }
+
+        /* Timeline Logos */
+        .timeline-logo-container {
+            position: absolute;
+            top: 15px;
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
+        }
+        .timeline-item:hover .timeline-logo-container {
+            transform: scale(1.1);
+            border-color: var(--accent);
+        }
+        .timeline-logo-container img {
+            max-width: 70%;
+            max-height: 70%;
+            object-fit: contain;
+        }
+
+        /* Position Logo for Left Items (Content Left, Logo Right) */
+        .timeline-item:nth-child(odd) .timeline-logo-container {
+            left: 100%;
+            margin-left: 45px; /* Spacing from center line */
+        }
+
+        /* Position Logo for Right Items (Content Right, Logo Left) */
+        .timeline-item:nth-child(even) .timeline-logo-container {
+            right: 100%;
+            margin-right: 45px; /* Spacing from center line */
+        }
+        
+        /* Mobile adjustment for timeline */
+        @media (max-width: 768px) {
+            .timeline-container::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .timeline-item:nth-child(even) { left: 0; }
+            .timeline-item::after { left: 21px; right: auto; }
+            .timeline-item:nth-child(even)::after { left: 21px; }
+            
+            .timeline-logo-container {
+                width: 50px; height: 50px;
+                top: 10px;
+                left: -15px !important; 
+                margin: 0 !important;
+                right: auto !important;
+                display: none; 
+            }
+        }
 
         /* --- Case Study Page Styles --- */
         .case-study-content h2 { font-size: 1.5rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; color: var(--primary-text); border-left: 3px solid var(--accent); padding-left: 1rem; }
         .case-study-content p, .case-study-content ul, .case-study-content ol { color: var(--secondary-text); line-height: 1.8; margin-bottom: 1rem; }
+        body.dark-mode .case-study-content p, 
+        body.dark-mode .case-study-content ul, 
+        body.dark-mode .case-study-content ol { color: var(--secondary-text-dark); }
+        body.dark-mode .case-study-content h2 { color: white; }
+
         .case-study-content ul { list-style-position: inside; list-style-type: disc; padding-left: 0.5rem; }
         .case-study-content ol { list-style-position: inside; list-style-type: decimal; padding-left: 0.5rem; }
         .case-study-content li { margin-bottom: 0.5rem; }
         .case-study-sidebar { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 0.5rem; padding: 1.5rem; }
         .case-study-sidebar h3 { font-weight: 700; color: var(--primary-text); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
+        body.dark-mode .case-study-sidebar h3 { color: white; border-bottom-color: var(--border-color-dark); }
         .case-study-sidebar p { color: var(--secondary-text); margin-bottom: 0.5rem; }
+        body.dark-mode .case-study-sidebar p { color: var(--secondary-text-dark); }
         .case-study-sidebar span { color: var(--primary-text); font-weight: 500; }
+        body.dark-mode .case-study-sidebar span { color: white; }
+
         .attachment-btn {
             display: inline-block;
             background-color: var(--card-bg);
@@ -342,6 +539,7 @@
             display: flex;
             flex-direction: column;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            position: relative;
         }
         .ai-chat-header {
             padding: 1rem 1.5rem;
@@ -419,6 +617,36 @@
             50%, 100% { background-color: #d1d5db; }
         }
 
+        /* Suggestions Area */
+        .ai-suggestions {
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            white-space: nowrap;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .ai-suggestions::-webkit-scrollbar {
+            display: none;
+        }
+        .suggestion-chip {
+            background-color: var(--light-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 999px;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            color: var(--secondary-text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .suggestion-chip:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
         .ai-chat-form {
             border-top: 1px solid var(--border-color);
             padding: 1rem 1.5rem;
@@ -452,9 +680,32 @@
         .ai-chat-send:hover {
             background-color: #0056b3;
         }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--secondary-text);
+        }
+        .theme-toggle:hover {
+            background-color: rgba(0,0,0,0.05);
+            color: var(--primary-text);
+        }
+        body.dark-mode .theme-toggle {
+            color: var(--primary-text-dark);
+        }
+        body.dark-mode .theme-toggle:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
     </style>
 </head>
-<body class="antialiased">
+<!-- Set dark-mode class by default here -->
+<body class="antialiased dark-mode">
     <canvas id="bg-canvas"></canvas>
 
     <!-- Loader -->
@@ -470,16 +721,25 @@
         <header class="fixed top-0 left-0 right-0 z-50 transition-colors duration-300 bg-transparent" id="header">
             <div class="container mx-auto px-6 py-5 flex justify-between items-center">
                 <a href="#" class="text-2xl font-bold tracking-wider uppercase">Jackson Mathew</a>
-                <nav class="hidden md:flex space-x-10">
-                    <a href="#about" class="nav-link uppercase tracking-widest text-sm">About</a>
-                    <a href="#timeline" class="nav-link uppercase tracking-widest text-sm">Experience</a>
-                    <a href="#skills" class="nav-link uppercase tracking-widest text-sm">Skills</a>
-                    <a href="#works" class="nav-link uppercase tracking-widest text-sm">Projects</a>
-                    <a href="#contact" class="nav-link uppercase tracking-widest text-sm">Contact</a>
-                </nav>
-                <button id="mobile-menu-button" class="md:hidden focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                </button>
+                
+                <div class="flex items-center gap-6">
+                    <nav class="hidden md:flex space-x-10">
+                        <a href="#about" class="nav-link uppercase tracking-widest text-sm">About</a>
+                        <a href="#timeline" class="nav-link uppercase tracking-widest text-sm">Experience</a>
+                        <a href="#skills" class="nav-link uppercase tracking-widest text-sm">Skills</a>
+                        <a href="#works" class="nav-link uppercase tracking-widest text-sm">Projects</a>
+                        <a href="#contact" class="nav-link uppercase tracking-widest text-sm">Contact</a>
+                    </nav>
+                    
+                    <!-- Theme Toggle Button -->
+                    <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Dark Mode">
+                        <i data-lucide="moon" class="w-5 h-5"></i>
+                    </button>
+
+                    <button id="mobile-menu-button" class="md:hidden focus:outline-none text-gray-600 dark:text-gray-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                    </button>
+                </div>
             </div>
             <div id="mobile-menu" class="hidden md:hidden bg-white bg-opacity-95">
                 <a href="#about" class="block py-3 px-6 text-center uppercase tracking-widest text-gray-700">About</a>
@@ -516,11 +776,86 @@
             <section id="timeline" class="section my-20" data-animation="timeline">
                 <h2 class="text-3xl font-bold text-center mb-12 uppercase tracking-widest">Professional Journey</h2>
                 <div class="timeline-container">
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Project Manager</h3><p class="text-gray-500 text-sm mb-3">Blackmont Consulting | Sept 2025 – Present</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Lead cross-functional teams to deliver technology-driven strategy projects for enterprise clients.</li><li>Manage project lifecycle, from scope definition and planning to execution, risk management, and delivery.</li><li>Serve as the primary liaison between client stakeholders and technical teams to ensure alignment and clear communication.</li><li>Develop strategic roadmaps and implement solutions that drive digital transformation and competitive advantage.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Project Manager & Business Analyst</h3><p class="text-gray-500 text-sm mb-3">Leading IT Solutions Provider | Mar 2024 – July 2024</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Improved reporting accuracy by 30% for a medical device app.</li><li>Reduced project timelines by 20% through clear documentation.</li><li>Enhanced team efficiency by 15% via KPI monitoring.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Freelance Consultant</h3><p class="text-gray-500 text-sm mb-3">Self-Employed | Jun 2023 – Jan 2024</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Achieved customer retention rates above 90%.</li><li>Drove a 25% revenue increase with data-driven process improvements.</li><li>Improved operational efficiency via platform integration.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Analyst – Business Optimization</h3><p class="text-gray-500 text-sm mb-3">Multinational Energy Firm | Jan 2019 - May 2023</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Increased annual revenue by $150K through process improvements.</li><li>Identified $300K in savings via optimized resource management.</li><li>Streamlined material tracking to significantly reduce costs.</li></ul></div></div>
-                    <div class="timeline-item"><div class="timeline-content"><h3 class="font-bold text-xl mb-1">Associate Consultant</h3><p class="text-gray-500 text-sm mb-3">Management Consulting Firm | Jun 2017 – Sept 2018</p><ul class="text-sm space-y-2 list-disc list-inside"><li>Proposed $3M in cost-saving strategies for clients.</li><li>Saved $200K annually by implementing Lean Six Sigma.</li><li>Reduced client onboarding time by 30%.</li></ul></div></div>
+                    <!-- Item 1: Blackmont -->
+                    <div class="timeline-item">
+                        <div class="timeline-logo-container">
+                            <img src="https://logo.clearbit.com/blackmontconsulting.com" onerror="this.src='https://placehold.co/100x100?text=BC'" alt="Blackmont Consulting">
+                        </div>
+                        <div class="timeline-content">
+                            <h3 class="font-bold text-xl mb-1">Project Manager</h3>
+                            <p class="text-gray-500 text-sm mb-3">Blackmont Consulting | Sept 2025 – Present</p>
+                            <ul class="text-sm space-y-2 list-disc list-inside">
+                                <li>Lead cross-functional teams to deliver technology-driven strategy projects for enterprise clients.</li>
+                                <li>Manage project lifecycle, from scope definition and planning to execution, risk management, and delivery.</li>
+                                <li>Serve as the primary liaison between client stakeholders and technical teams to ensure alignment and clear communication.</li>
+                                <li>Develop strategic roadmaps and implement solutions that drive digital transformation and competitive advantage.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Item 2: Enaviya -->
+                    <div class="timeline-item">
+                         <div class="timeline-logo-container">
+                            <img src="https://logo.clearbit.com/enaviya.com" onerror="this.src='https://placehold.co/100x100?text=EIT'" alt="Enaviya Information Technologies">
+                        </div>
+                        <div class="timeline-content">
+                            <h3 class="font-bold text-xl mb-1">Project Manager & Business Analyst</h3>
+                            <p class="text-gray-500 text-sm mb-3">Enaviya Information Technologies | Mar 2024 – July 2024</p>
+                            <ul class="text-sm space-y-2 list-disc list-inside">
+                                <li>Improved reporting accuracy by 30% for a medical device app.</li>
+                                <li>Reduced project timelines by 20% through clear documentation.</li>
+                                <li>Enhanced team efficiency by 15% via KPI monitoring.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Item 3: Freelance -->
+                    <div class="timeline-item">
+                        <div class="timeline-logo-container">
+                             <img src="https://placehold.co/100x100/f4f7fa/1a202c?text=Self" alt="Freelance">
+                        </div>
+                        <div class="timeline-content">
+                            <h3 class="font-bold text-xl mb-1">Freelance Consultant</h3>
+                            <p class="text-gray-500 text-sm mb-3">Self-Employed | Jun 2023 – Jan 2024</p>
+                            <ul class="text-sm space-y-2 list-disc list-inside">
+                                <li>Achieved customer retention rates above 90%.</li>
+                                <li>Drove a 25% revenue increase with data-driven process improvements.</li>
+                                <li>Improved operational efficiency via platform integration.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Item 4: Lamprell -->
+                    <div class="timeline-item">
+                         <div class="timeline-logo-container">
+                            <img src="https://logo.clearbit.com/lamprell.com" onerror="this.src='https://placehold.co/100x100?text=LE'" alt="Lamprell Energy">
+                        </div>
+                        <div class="timeline-content">
+                            <h3 class="font-bold text-xl mb-1">Analyst – Business Optimization</h3>
+                            <p class="text-gray-500 text-sm mb-3">Lamprell Energy | Jan 2019 - May 2023</p>
+                            <ul class="text-sm space-y-2 list-disc list-inside">
+                                <li>Increased annual revenue by $150K through process improvements.</li>
+                                <li>Identified $300K in savings via optimized resource management.</li>
+                                <li>Streamlined material tracking to significantly reduce costs.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Item 5: Kalvi World -->
+                    <div class="timeline-item">
+                        <div class="timeline-logo-container">
+                            <img src="https://logo.clearbit.com/kalviworld.com" onerror="this.src='https://placehold.co/100x100?text=KW'" alt="Kalvi World">
+                        </div>
+                        <div class="timeline-content">
+                            <h3 class="font-bold text-xl mb-1">Associate Consultant</h3>
+                            <p class="text-gray-500 text-sm mb-3">Kalvi World | Jun 2017 – Sept 2018</p>
+                            <ul class="text-sm space-y-2 list-disc list-inside">
+                                <li>Proposed $3M in cost-saving strategies for clients.</li>
+                                <li>Saved $200K annually by implementing Lean Six Sigma.</li>
+                                <li>Reduced client onboarding time by 30%.</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </section>
             
@@ -554,8 +889,26 @@
                     <!-- Product Management Content -->
                     <div id="pm" class="tab-content active">
                         <div class="space-y-24 md:space-y-32">
+                            <div class="project-item" data-project="pm-a4s">
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=WM+Decarbonization+Strategy" alt="A4S Competition Project Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-description">
+                                    <p class="project-category">Corporate Strategy & Sustainability</p>
+                                    <h3 class="project-title">Waste Management Inc. Decarbonization Strategy</h3>
+                                    <p class="project-summary">Developed a comprehensive strategy for Waste Management, Inc. to transition towards a low-carbon future. The proposal, created for the A4S competition, detailed solutions for landfill gas capture and fleet electrification to reduce emissions by 30% and enhance profitability.</p>
+                                    <div class="project-tags"><span>Sustainability</span><span>Corporate Strategy</span><span>A4S Competition</span><span>Climate Tech</span></div>
+                                </div>
+                            </div>
+                            <div class="project-item flex-row-reverse" data-project="pm-sustainabit">
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Sustainabite" alt="Sustainabite Project Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-description">
+                                    <p class="project-category">Social Impact & Tech</p>
+                                    <h3 class="project-title">Sustainabite</h3>
+                                    <p class="project-summary">Developed "Sustainabite," a comprehensive product concept for a surplus food redistribution platform to combat food waste and insecurity. Created for the GBSN Social Logistics Challenge, the project outlines a full product strategy from problem analysis to a phased, tech-driven implementation plan using AI and predictive analytics.</p>
+                                    <div class="project-tags"><span>Product Concept</span><span>Social Impact</span><span>AI/ML</span><span>GBSN Competition</span></div>
+                                </div>
+                            </div>
                             <div class="project-item" data-project="pm-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/2d3748/edf2f7?text=Medical+Device+Analytics+UI" alt="Medical Device App Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Predictive+Analytics+Dashboard" alt="Medical Device App Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">AI in Healthcare</p>
                                     <h3 class="project-title">Medical Device Management App</h3>
@@ -564,7 +917,7 @@
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="pm-2">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/4285F4/ffffff?text=AI-Powered+Search+Results" alt="Google Search UX Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=AI-Powered+Search+Results" alt="Google Search UX Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">Search & Accessibility</p>
                                     <h3 class="project-title">Google Search Experience Enhancement</h3>
@@ -573,7 +926,7 @@
                                 </div>
                             </div>
                             <div class="project-item" data-project="pm-3">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/0A66C2/ffffff?text=LinkedIn+AI+Profile+Analysis" alt="LinkedIn Optimizer UI Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=LinkedIn+Profile+Analysis+UI" alt="LinkedIn Optimizer UI Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">Professional Networking & AI</p>
                                     <h3 class="project-title">AI-Powered LinkedIn Profile Optimizer</h3>
@@ -582,7 +935,7 @@
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="pm-4">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/E8528E/ffffff?text=Gamified+Fashion+Onboarding" alt="Myntra Onboarding Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Gamified+Onboarding+Flow" alt="Myntra Onboarding Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">E-commerce & User Onboarding</p>
                                     <h3 class="project-title">Myntra Onboarding Experience Redesign</h3>
@@ -596,7 +949,7 @@
                     <div id="be" class="tab-content">
                          <div class="space-y-24 md:space-y-32">
                              <div class="project-item" data-project="be-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/38B2AC/ffffff?text=Real-time+IoT+Sensor+Dashboard" alt="IoT Sensor Dashboard for Temperature Monitoring" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Real-time+IoT+Sensor+Dashboard" alt="IoT Sensor Dashboard for Temperature Monitoring" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">IoT-Based Automated Climate Monitoring</h3>
@@ -605,7 +958,7 @@
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="be-2">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/D69E2E/ffffff?text=Fleet+Cost+Optimization+Analysis" alt="Forklift Utilization Pareto Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Fleet+Utilization+Cost+Analysis" alt="Forklift Utilization Pareto Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Forklift Fleet Optimization Strategy</h3>
@@ -614,7 +967,7 @@
                                 </div>
                             </div>
                              <div class="project-item" data-project="be-3">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/DD6B20/ffffff?text=Welder+Quality+Improvement+Chart" alt="Welder Performance Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Welder+NDT+Rejection+Rate+Analysis" alt="Welder Performance Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Welder Performance & Quality Improvement</h3>
@@ -623,7 +976,7 @@
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="be-4">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/B7791F/ffffff?text=Scrap+Metal+ROI+Infographic" alt="Scrap Metal Value Comparison Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Scrap+Value+ROI+Calculation" alt="Scrap Metal Value Comparison Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Scrap Metal Value Recovery Initiative</h3>
@@ -632,7 +985,7 @@
                                 </div>
                             </div>
                              <div class="project-item" data-project="be-5">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/805AD5/ffffff?text=Vendor+Contract+Analysis" alt="Canteen Cost Breakdown Pie Chart" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Vendor+Contract+Cost-Benefit" alt="Canteen Cost Breakdown Pie Chart" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS EXCELLENCE</p>
                                     <h3 class="project-title">Canteen Services Cost Optimization</h3>
@@ -646,7 +999,7 @@
                     <div id="c" class="tab-content">
                         <div class="space-y-24 md:space-y-32">
                             <div class="project-item" data-project="ds-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/3182CE/ffffff?text=Enterprise+Cost-Saving+Strategy" alt="Consulting Cost-Saving Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Lean+Six+Sigma+Implementation" alt="Consulting Cost-Saving Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">Management Consulting</p>
                                     <h3 class="project-title">Enterprise Cost-Saving Strategy</h3>
@@ -660,7 +1013,7 @@
                     <div id="ba" class="tab-content">
                         <div class="space-y-24 md:space-y-32">
                             <div class="project-item" data-project="ba-1">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/C53030/ffffff?text=E-commerce+Customer+Segmentation" alt="Customer Segmentation Dashboard Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=RFM+Customer+Segmentation" alt="Customer Segmentation Dashboard Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">E-commerce Customer Segmentation</h3>
@@ -669,7 +1022,7 @@
                                 </div>
                             </div>
                             <div class="project-item flex-row-reverse" data-project="ba-2">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/2C5282/ffffff?text=Live+Warehouse+Operations+KPIs" alt="Warehouse KPI Dashboard Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Live+KPI+Dashboard+for+Operations" alt="Warehouse KPI Dashboard Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Live Warehouse Operations Dashboard</h3>
@@ -678,7 +1031,7 @@
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-3">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/2F855A/ffffff?text=Digital+Inventory+System" alt="Digital Inventory System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Digital+vs+Manual+Process+Flow" alt="Digital Inventory System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Digital Inventory Cycle Count System</h3>
@@ -687,7 +1040,7 @@
                                 </div>
                             </div>
                              <div class="project-item flex-row-reverse" data-project="ba-4">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/C05621/ffffff?text=Oracle+ERP+Automation+UI" alt="Oracle DO Register Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Oracle+ERP+Enhancement+Mockup" alt="Oracle DO Register Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Oracle DO Register & GRN Automation</h3>
@@ -696,7 +1049,7 @@
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-5">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/718096/ffffff?text=Mobile+Traceability+Scanning" alt="Welding Traceability System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Mobile+Scanning+App+Prototype" alt="Welding Traceability System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Welding Consumable Traceability System</h3>
@@ -705,7 +1058,7 @@
                                 </div>
                             </div>
                             <div class="project-item flex-row-reverse" data-project="ba-6">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/4A5568/ffffff?text=Inventory+Data+Hierarchy+Model" alt="Warehouse Inventory System Standardization Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=New+Inventory+Data+Hierarchy" alt="Warehouse Inventory System Standardization Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Warehouse Inventory System Standardization</h3>
@@ -714,7 +1067,7 @@
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-7">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/667EEA/ffffff?text=End-to-End+Traceability+Report" alt="Material Traceability Reporting Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Consolidated+Traceability+Report" alt="Material Traceability Reporting Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">End-to-End Material Traceability Reporting</h3>
@@ -723,7 +1076,7 @@
                                 </div>
                             </div>
                             <div class="project-item flex-row-reverse" data-project="ba-8">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/ED8936/ffffff?text=Warehouse+QR+Code+System" alt="QR Code Warehouse System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Warehouse+QR+Code+System+Flow" alt="QR Code Warehouse System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">QR Code-Based Digital Warehouse System</h3>
@@ -732,7 +1085,7 @@
                                 </div>
                             </div>
                             <div class="project-item" data-project="ba-9">
-                                <div class="project-visual"><img src="https://placehold.co/1200x800/D53F8C/ffffff?text=Automated+Shelf-Life+Alerts" alt="Shelf-Life Tracking System Mockup" class="w-full h-auto object-cover"></div>
+                                <div class="project-visual"><img src="https://placehold.co/1200x800/f4f7fa/1a202c?text=Automated+Expiry+Alert+Logic" alt="Shelf-Life Tracking System Mockup" class="w-full h-auto object-cover"></div>
                                 <div class="project-description">
                                     <p class="project-category">BUSINESS ANALYTICS</p>
                                     <h3 class="project-title">Automated Shelf-Life & Expiry Tracking System</h3>
@@ -769,7 +1122,7 @@
     <!-- Project Detail Pages -->
     <div id="project-pages">
         <!-- Case Study 1: Medical Device App -->
-        <div id="pm-1" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Medical Device Management App</h1><p class="text-lg text-gray-500">Driving efficiency and accuracy in healthcare with AI-powered enterprise solutions.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Leading IT Solutions Provider</span></p><p><strong>My Role:</strong> <span>Project Manager, Business Analyst</span></p><p><strong>Timeline:</strong> <span>5 Months</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Jira, Confluence</span></p><p><span>Power BI</span></p><p><span>Agile, Scrum</span></p><p><span>Predictive Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Problem & Goal</h2><p>A major medical device manufacturer was hampered by an outdated system for tracking device usage. The process was manual, error-prone, and slow, creating compliance risks and operational bottlenecks. The primary goal was to develop a modern, centralized enterprise application to automate tracking, improve reporting accuracy, and predict maintenance needs to prevent downtime.</p><h2>My Role & Responsibilities</h2><p>As the Project Manager and Business Analyst, I led the project from concept to launch. My responsibilities included: gathering and documenting requirements from stakeholders (technicians, compliance officers), creating user stories, managing the product backlog in Jira, facilitating all Agile/Scrum ceremonies (sprints, stand-ups, retrospectives), and serving as the primary liaison between the 15-person development team and executive leadership.</p>
+        <div id="pm-1" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Medical Device Management App</h1><p class="text-lg text-gray-500">Driving efficiency and accuracy in healthcare with AI-powered enterprise solutions.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Enaviya Information Technologies</span></p><p><strong>My Role:</strong> <span>Project Manager, Business Analyst</span></p><p><strong>Timeline:</strong> <span>5 Months</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Jira, Confluence</span></p><p><span>Power BI</span></p><p><span>Agile, Scrum</span></p><p><span>Predictive Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Problem & Goal</h2><p>A major medical device manufacturer was hampered by an outdated system for tracking device usage. The process was manual, error-prone, and slow, creating compliance risks and operational bottlenecks. The primary goal was to develop a modern, centralized enterprise application to automate tracking, improve reporting accuracy, and predict maintenance needs to prevent downtime.</p><h2>My Role & Responsibilities</h2><p>As the Project Manager and Business Analyst, I led the project from concept to launch. My responsibilities included: gathering and documenting requirements from stakeholders (technicians, compliance officers), creating user stories, managing the product backlog in Jira, facilitating all Agile/Scrum ceremonies (sprints, stand-ups, retrospectives), and serving as the primary liaison between the 15-person development team and executive leadership.</p>
         <h2>Challenges & My Approach</h2><p>One of the primary challenges was navigating conflicting priorities between the compliance department, which required robust audit trails, and the field technicians, who needed a fast, streamlined mobile interface. To resolve this, I facilitated a series of workshops using journey mapping to find common ground. This collaborative process led to a prioritized backlog in Jira that balanced compliance needs with user experience, securing buy-in from both groups. I also championed the allocation of 15% of each sprint to addressing technical debt from the legacy system, a decision I justified to leadership with a clear ROI based on projected long-term development velocity.</p>
         <h2>Outcomes & User Impact</h2><p>The new application was a transformative success, delivering significant, measurable value:</p><ul><li><strong>30% Boost in Reporting Accuracy:</strong> AI-driven analytics and reduced manual entry eliminated common errors, ensuring data integrity.</li><li><strong>20% Faster Project Timelines:</strong> Clear documentation and agile execution accelerated development and deployment.</li><li><strong>15% Increase in Team Efficiency:</strong> Automated workflows and KPI monitoring freed up valuable technician and administrative time.</li><li><strong>40% Reduction in User-Reported Errors:</strong> The intuitive UI design drastically improved the daily experience for field technicians.</li></ul><h2>Visuals & Deliverables</h2><p>Key deliverables included detailed process flow diagrams, interactive wireframes, and the comprehensive product roadmap. The Power BI dashboard provided executives with real-time insights into device performance and maintenance forecasts.</p><div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Medical+App+Product+Roadmap" alt="Product Roadmap" class="rounded-lg my-4 border border-gray-200 w-full"></div>
         <h2>Key Lessons Learned</h2><p>This project reinforced the value of proactive stakeholder management. By bringing opposing groups into the same room early, we converted potential roadblocks into collaborative design decisions. It also taught me the importance of advocating for technical health as a core product feature, not just a 'nice-to-have'.</p></div></div></div></div>
@@ -795,7 +1148,7 @@
                     <div class="lg:col-span-1">
                         <div class="case-study-sidebar sticky top-8">
                             <h3>Project Snapshot</h3>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
+                            <p><strong>Company:</strong> <span>Lamprell Energy</span></p>
                             <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
                             <p><span>Process Automation</span></p><p><span>IoT (iMonnit Sensors)</span></p><p><span>Cost-Benefit Analysis</span></p><p><span>Change Management</span></p>
@@ -832,7 +1185,7 @@
                     <div class="lg:col-span-1">
                         <div class="case-study-sidebar sticky top-8">
                             <h3>Project Snapshot</h3>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
+                            <p><strong>Company:</strong> <span>Lamprell Energy</span></p>
                             <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
                             <p><span>Excel (Pareto, Cost Analysis)</span></p><p><span>Root Cause Analysis (RCA)</span></p><p><span>Asset Management</span></p>
@@ -869,7 +1222,7 @@
                     <div class="lg:col-span-1">
                         <div class="case-study-sidebar sticky top-8">
                             <h3>Project Snapshot</h3>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
+                            <p><strong>Company:</strong> <span>Lamprell Energy</span></p>
                             <p><strong>My Role:</strong> <span>Project Leader (LSS Green Belt)</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
                             <p><span>Lean Six Sigma (DMAIC)</span></p><p><span>Root Cause Analysis (Fishbone, 5 Whys)</span></p><p><span>Statistical Analysis</span></p>
@@ -905,7 +1258,7 @@
                     <div class="lg:col-span-1">
                         <div class="case-study-sidebar sticky top-8">
                             <h3>Project Snapshot</h3>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
+                            <p><strong>Company:</strong> <span>Lamprell Energy</span></p>
                             <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
                             <h3 class="mt-6">Tools & Frameworks</h3>
                             <p><span>Lean (Value Stream Mapping)</span></p><p><span>ROI Analysis</span></p><p><span>Process Improvement</span></p>
@@ -930,87 +1283,156 @@
         </div>
 
         <!-- Case Study Business Excellence 5: Canteen Optimization -->
-        <div id="be-5" class="page">
+        <div id="be-5" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Canteen Services Cost Optimization</h1><p class="text-lg text-gray-500">Analyzing a $2M vendor contract to identify savings and improve employee satisfaction.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Excellence</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        
+        <!-- Case Study Business Analytics 9: Shelf-Life Tracking -->
+        <div id="ba-9" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Automated Shelf-Life & Expiry Tracking System</h1><p class="text-lg text-gray-500">Mitigating risk and ensuring compliance with an automated Oracle system.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
+        
+        <!-- Case Study for A4S Competition -->
+        <div id="pm-a4s" class="page">
             <div class="container mx-auto max-w-6xl text-primary-text">
                 <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
                 <div class="text-center mb-12">
-                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Canteen Services Cost Optimization</h1>
-                    <p class="text-lg text-gray-500">Using contract analysis and employee feedback to address a $2M annual expenditure.</p>
+                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">WM Decarbonization Strategy</h1>
+                    <p class="text-lg text-gray-500">A strategic proposal for Waste Management Inc.'s transition to a sustainable future.</p>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
                     <div class="lg:col-span-1">
                         <div class="case-study-sidebar sticky top-8">
                             <h3>Project Snapshot</h3>
-                            <p><strong>Company:</strong> <span>Multinational Energy Firm</span></p>
-                            <p><strong>My Role:</strong> <span>Business Optimization Analyst</span></p>
-                            <h3 class="mt-6">Tools & Frameworks</h3>
-                            <p><span>Contract Analysis</span></p><p><span>Survey Design (Microsoft Forms)</span></p><p><span>Stakeholder Management</span></p>
+                            <p><strong>Category:</strong> <span>Corporate Strategy (Competition)</span></p>
+                            <p><strong>My Role:</strong> <span>Strategic Analyst</span></p>
+                            <p><strong>Timeline:</strong> <span>A4S International Case Competition 2024</span></p>
+                             <h3 class="mt-6">Frameworks & Skills</h3>
+                            <p><span>Financial Modeling</span></p>
+                            <p><span>Corporate Strategy</span></p>
+                            <p><span>Climate Transition Planning</span></p>
+                            <p><span>Stakeholder Impact Analysis</span></p>
+                            <p><span>ROI Analysis</span></p>
                         </div>
                     </div>
                     <div class="lg:col-span-2 case-study-content">
-                        <h2>Business Problem</h2>
-                        <p>The company was spending approximately $2 million annually on canteen amenities and food allowances. This significant expenditure lacked proper oversight, and the value being delivered by the third-party catering vendor was unclear.</p>
-                        <h2>Challenges & My Approach</h2>
-                        <p>The challenge was balancing cost-cutting with employee morale. I knew that any changes to food services could be met with resistance. My approach was to use a two-pronged strategy: a rigorous legal contract review to find objective cost savings, and a comprehensive employee survey to capture the subjective user experience. This allowed me to build a case that was not just about saving money, but also about responding to widespread employee dissatisfaction with hygiene and food quality.</p>
-                        <h2>Outcomes & Business Impact</h2>
+                        <h2>Executive Summary</h2>
+                        <p>For the A4S (Accounting for Sustainability) competition, my team and I developed a strategic proposal for Waste Management, Inc. (WM), North America's leading environmental services provider. Our challenge was to create a financially viable roadmap for WM to address its carbon-intensive operations and lead the climate transition within its industry. Our solution focused on a two-pronged approach: tackling landfill emissions and decarbonizing their vehicle fleet.</p>
+
+                        <h2>The Problem: A Two-Fold Carbon Challenge</h2>
+                        <p>WM faces significant environmental challenges. First, its landfills are major sources of methane, a greenhouse gas over 80 times more potent than CO2. Second, its vast fleet of diesel-powered collection vehicles contributes significantly to carbon emissions. Our task was to devise solutions that not only mitigate this impact but also create long-term value for the business.</p>
+                        
+                        <h2>My Role & Responsibilities</h2>
+                        <p>As a strategic analyst on the team, my responsibilities included:</p>
                         <ul>
-                            <li><strong>Identified $83K+ in Direct Cost Savings:</strong> The contract analysis created immediate leverage to back-charge the vendor for services the company was unnecessarily paying for.</li>
-                            <li><strong>Built a Data-Backed Case for Re-Tendering:</strong> The survey finding that 81% of employees did not want to continue with the current caterer provided an undeniable justification for seeking a new vendor.</li>
-                            <li><strong>Improved Stakeholder Alignment:</strong> By combining financial data with employee feedback, I created a powerful narrative that aligned HR, Operations, and Safety on the need for change.</li>
+                            <li>Analyzing WM's operational and financial data to identify key areas for carbon reduction.</li>
+                            <li>Researching and evaluating the feasibility of technologies like landfill gas-to-energy and electric vehicle fleets.</li>
+                            <li>Building the business case for our proposed solutions, including initial cost, ROI, and long-term financial implications.</li>
+                            <li>Framing our recommendations to align with global sustainability goals and enhance WM's brand reputation.</li>
                         </ul>
-                         <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Employee+Satisfaction+Survey+Results" alt="Survey Results Chart" class="rounded-lg my-4 border border-gray-200 w-full"></div>
-                        <h2>Key Lessons Learned</h2>
-                        <p>Combining quantitative data (contract analysis) with qualitative data (user feedback) creates a far more compelling argument for change than either one alone. This dual approach allows you to build a business case that satisfies both financial and human-centered objectives.</p>
+                        
+                        <h2>The Solution: Gas Capture & Fleet Electrification</h2>
+                        <p>Our strategy was centered on two high-impact initiatives:</p>
+                        <ol>
+                            <li><strong>Landfill Gas (LFG) Capture & Utilization:</strong> Implementing advanced systems to capture methane emissions from landfills and convert this gas into renewable natural gas (RNG), a clean-burning fuel. This turns a major liability into a revenue-generating asset.</li>
+                            <li><strong>Fleet Electrification:</strong> A phased transition from diesel-powered trucks to a fully electric fleet. This directly reduces carbon emissions, lowers fuel and maintenance costs, and improves urban air quality.</li>
+                        </ol>
+                        
+                        <h2>Business Impact & KPIs</h2>
+                        <p>Our financial and environmental models projected significant returns on these investments:</p>
+                        <ul>
+                            <li><strong>Enhanced Profitability:</strong> Reduce operational costs by 20% and generate up to 10% in new revenue from waste-to-energy sales, while avoiding up to $1 million in potential violation fines.</li>
+                            <li><strong>Environmental Impact:</strong> Cut greenhouse gas emissions by 30% and conserve 20% of natural resources.</li>
+                            <li><strong>Improved Customer Satisfaction:</strong> Boost customer loyalty and brand reputation, leading to a projected 15% increase in satisfaction.</li>
+                        </ul>
+                        
+                        <h2>Alignment with Global Goals</h2>
+                        <p>Our proposed solutions directly align with key UN Sustainable Development Goals (SDGs), including SDG 13 (Climate Action), SDG 7 (Affordable and Clean Energy), and SDG 11 (Sustainable Cities and Communities), positioning WM as a leader in the circular economy.</p>
+
+                        <h2>Key Learnings</h2>
+                        <p>This project was a fantastic exercise in integrating sustainability into core business strategy. The key takeaway was that environmental initiatives don't have to be cost centers. With the right technology and a solid business case, decarbonization can be a powerful driver of profitability, efficiency, and long-term competitive advantage.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Case Study 3: Consulting -->
-        <div id="ds-1" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Enterprise Cost-Saving Strategy</h1><p class="text-lg text-gray-500">Delivering multi-million dollar cost-saving strategies for enterprise clients.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Management Consulting Firm</span></p><p><strong>My Role:</strong> <span>Associate Consultant</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>Financial Modeling (Excel)</span></p><p><span>Lean Six Sigma</span></p><p><span>Client Onboarding Optimization</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Problem & Goal</h2><p>Enterprise clients were burdened with significant operational overhead and inefficient processes. The goal was to conduct expert analysis to identify and implement large-scale cost-saving measures without disrupting core business functions.</p><h2>Challenges & My Approach</h2>
-        <p>A key challenge in consulting is ensuring that recommendations are not just theoretically sound, but also practical for the client to implement. I worked directly with a client's middle management to map their existing processes, which helped ground our Lean Six Sigma recommendations in their day-to-day reality. This collaborative approach ensured the final proposal was both ambitious and achievable, leading to greater client buy-in.</p>
-        <h2>Outcomes & Impact</h2><ul><li><strong>$3M+ in Proposed Cost-Saving Strategies:</strong> Delivered to a portfolio of enterprise clients through detailed financial modeling and strategic planning.</li><li><strong>$200K in Annual Savings:</strong> Achieved for one key client through the direct implementation of Lean Six Sigma.</li><li><strong>30% Reduction in Client Onboarding Time:</strong> Improved internal firm efficiency and client satisfaction via a redesigned process.</li></ul><h2>Key Lessons Learned</h2><p>Effective consulting requires balancing an external, objective viewpoint with a deep, empathetic understanding of the client's internal culture and operational constraints. The best solutions are co-created with the client, not just presented to them.</p></div></div></div></div>
+        <!-- Updated Case Study for Sustainabite -->
+        <div id="pm-sustainabit" class="page">
+            <div class="container mx-auto max-w-6xl text-primary-text">
+                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl lg:text-5xl font-bold mb-2">Sustainabite: Surplus Food Redistribution</h1>
+                    <p class="text-lg text-gray-500">A data-driven product strategy to combat food waste and insecurity in Leeds.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+                    <div class="lg:col-span-1">
+                        <div class="case-study-sidebar sticky top-8">
+                            <h3>Project Snapshot</h3>
+                            <p><strong>Category:</strong> <span>Product Management (Concept)</span></p>
+                            <p><strong>My Role:</strong> <span>Product Lead & Strategist</span></p>
+                            <p><strong>Timeline:</strong> <span>GBSN Challenge 2024</span></p>
+                             <h3 class="mt-6">Frameworks & Skills</h3>
+                            <p><span>Market & User Research</span></p>
+                            <p><span>SWOT & Competitive Analysis</span></p>
+                            <p><span>Product Strategy & Roadmapping</span></p>
+                            <p><span>Financial Modeling & Forecasting</span></p>
+                            <p><span>Go-To-Market Strategy</span></p>
+                            <h3 class="mt-6">Deliverables</h3>
+                            <a href="Team Sustainabite_Written_Report.pdf" download="Sustainabite-Written-Report.pdf" class="attachment-btn w-full text-center mb-2">Download Full Report (PDF)</a>
+                            <a href="Team Sustainabite_Creative_Illustration (1).pptx" download="Sustainabite-GBSN-Presentation.pptx" class="attachment-btn w-full text-center">Download Presentation Deck</a>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 case-study-content">
+                        <h2>Executive Summary</h2>
+                        <p>Sustainabite is a product concept for a B2B2C tech platform designed to create a hyper-local, efficient marketplace for surplus food. The platform connects supermarkets with excess inventory to community organizations like university stores and charities, tackling the concurrent problems of food waste and food insecurity. By leveraging AI for logistics and blockchain for transparency, Sustainabite aims to create a commercially viable solution that delivers significant social and environmental impact, starting with a pilot in Leeds.</p>
 
-        
-        <!-- Business Analytics Case Studies -->
-        <div id="ba-1" class="page">
-            <div class="container mx-auto max-w-6xl text-primary-text">
-                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">E-commerce Customer Segmentation</h1><p class="text-lg text-gray-500">Leveraging data to drive targeted marketing and enhance customer lifetime value.</p></div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Freelance Consulting</span></p><p><strong>My Role:</strong> <span>Business Analyst</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>SQL, Tableau, RFM Analysis</span></p></div></div>
-                    <div class="lg:col-span-2 case-study-content"><h2>Business Problem</h2><p>An e-commerce client's generic marketing campaigns resulted in low engagement and poor ROI. They lacked a deep understanding of their customer base, preventing effective personalization.</p>
-                    <h2>Challenges & My Approach</h2><p>The primary challenge was translating complex data into a simple, usable tool for a non-technical marketing team. I used SQL for the heavy lifting (RFM analysis) but focused on delivering the final output as an intuitive, interactive Tableau dashboard. I ran a training session with the marketing team to ensure they were comfortable using the dashboard to create and export targeted customer lists independently.</p>
-                    <h2>Outcomes & Impact</h2><p>The dashboard enabled a shift from mass marketing to a personalized strategy. Key outcomes included a <strong>15% increase in marketing ROI</strong> and a <strong>10% lift in customer lifetime value</strong> by targeting "At-Risk" customers with tailored promotions.</p>
-                    <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Tableau+Dashboard+-+RFM+Segments" alt="Tableau Dashboard" class="rounded-lg my-4 border border-gray-200 w-full"></div>
-                    <h2>Key Lessons Learned</h2><p>The final deliverable for an analytics project is not the analysis itself, but the enablement of the end-user. Success is measured by whether the stakeholders can use your work to make better decisions long after the project is finished.</p></div>
+                        <h2>The Problem Space: A Market Failure in Food Logistics</h2>
+                        <p>Our research uncovered a significant market failure in Leeds: Supermarkets waste an estimated <strong>£100 million in food annually</strong>, while <strong>22% of local households experience food insecurity</strong>. This includes over 40,000 university students facing financial hardship. The core problem is a lack of an efficient, trusted, and real-time system to redirect perfectly edible surplus food from suppliers to those in need before it expires.</p>
+                        
+                        <h2>My Role & Responsibilities</h2>
+                        <p>As the product lead, I co-developed the end-to-end strategy, focusing on:</p>
+                        <ul>
+                            <li><strong>Market Analysis:</strong> Quantifying the problem and sizing the opportunity.</li>
+                            <li><strong>Strategic Planning:</strong> Conducting a full SWOT analysis to define our strategic position and potential risks.</li>
+                            <li><strong>Product Definition:</strong> Defining the core features, user flows, and technology stack.</li>
+                            <li><strong>Business Case:</strong> Building a comprehensive business model, including a 4-year financial forecast and go-to-market plan.</li>
+                        </ul>
+                        
+                        <h2>Strategic Analysis: Finding Our Niche</h2>
+                        <p>A SWOT analysis was critical in shaping our strategy. While we identified weaknesses like high initial costs and dependence on supermarkets, we found a compelling opportunity. Existing solutions lacked the technological integration for efficient, city-wide logistics. Our key strength and differentiator became the integration of AI and blockchain to provide a transparent, reliable, and scalable B2B solution that enhances Corporate Social Responsibility (CSR) for our supermarket partners.</p>
+
+                        <h2>The Solution: An AI-Powered B2B2C Logistics Platform</h2>
+                        <p>Sustainabite is envisioned as a seamless digital platform connecting surplus food supply with community demand. The core technology stack would leverage:</p>
+                        <ul>
+                            <li><strong>AI-Powered Logistics:</strong> To optimize collection routes for City Council partners, minimizing fuel costs and time.</li>
+                            <li><strong>Predictive Analytics:</strong> To forecast surplus generation and match it with real-time demand from university stores and charities.</li>
+                            <li><strong>Blockchain for Transparency:</strong> To create an immutable record of the food's journey, ensuring accountability and building trust with all stakeholders.</li>
+                             <li><strong>Mobile-First Interface:</strong> For supermarkets to easily log surplus and for students and charities to view available, discounted food.</li>
+                        </ul>
+                        
+                        <h2>Business Model & Go-To-Market Strategy</h2>
+                        <p>We designed a multi-stream revenue model to ensure sustainability:</p>
+                        <ol>
+                            <li><strong>B2B Subscription:</strong> Supermarkets pay a fee for waste reduction services and CSR reporting.</li>
+                            <li><strong>Public Sector Grants:</strong> Partnering with Leeds City Council to secure funding for sustainability initiatives.</li>
+                            <li><strong>Transaction Fees:</strong> A small commission from university stores on goods sold at a reduced price.</li>
+                        </ol>
+                        <p>Our go-to-market is a phased 12-month plan, starting with a lean pilot of 5 supermarkets to validate the model before scaling city-wide. This de-risks the investment and allows for iterative product improvements based on real-world data.</p>
+
+                        <h2>Measuring Success: KPIs & Projected Impact</h2>
+                        <p>Our primary success metric is **Value of food redistributed annually (£)**. Based on our financial model, we project profitability by Year 2. By Year 4, the platform is forecast to:</p>
+                        <ul>
+                            <li>Partner with <strong>30 supermarkets</strong>.</li>
+                            <li>Generate nearly <strong>£100,000 in annual net profit</strong>.</li>
+                            <li>Redistribute food supporting over <strong>2,000 students and 1,500 elderly individuals</strong>.</li>
+                            <li>Prevent over <strong>225,000 kg of CO2 emissions</strong> per year.</li>
+                        </ul>
+                        
+                        <h2>Alignment with Global Goals</h2>
+                        <p>The project was explicitly designed to align with three UN Sustainable Development Goals: <strong>SDG 2 (Zero Hunger)</strong>, <strong>SDG 10 (Reduced Inequalities)</strong>, and <strong>SDG 11 (Sustainable Cities and Communities)</strong>, making it a compelling proposition for public-private partnerships.</p>
+
+                        <h2>Key Learnings</h2>
+                        <p>This project was a deep dive into designing a multi-sided platform. The biggest takeaway was the need for a robust strategy to solve the "chicken and egg" problem. Our phased approach, focusing first on securing a critical mass of supermarket suppliers, was designed specifically to create the necessary value to attract and retain demand-side users (students and charities). The detailed financial modeling also proved that a business can "do good" and "do well" simultaneously.</p>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div id="ba-2" class="page">
-            <div class="container mx-auto max-w-6xl text-primary-text">
-                <button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button>
-                <div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Live Warehouse Operations Dashboard</h1><p class="text-lg text-gray-500">Transforming raw ERP data into actionable, real-time insights for warehouse management.</p></div>
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
-                    <div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Company:</strong> <span>Multinational Energy Firm</span></p><p><strong>My Role:</strong> <span>Business Analyst</span></p><h3 class="mt-6">Tools & Frameworks</h3><p><span>BI, Dashboard Design, Oracle ERP</span></p></div></div>
-                    <div class="lg:col-span-2 case-study-content"><h2>Business Problem</h2><p>The warehouse management team lacked real-time visibility into KPIs, relying on slow, manual reports. This reactive process meant that by the time they had insights, it was often too late to act.</p>
-                    <h2>Challenges & My Approach</h2><p>The challenge was defining what to measure. The team had dozens of potential metrics. I led a series of stakeholder interviews to narrow down the list to the "vital few" KPIs that truly drove business value (e.g., 'GRN creation time', 'QC inspection delays'). This focus ensured the final dashboard was clean, uncluttered, and centered on the most actionable information.</p>
-                    <h2>Outcomes & Impact</h2><p>The dashboard shifted the team from reactive to proactive management. It <strong>eliminated hours of daily manual reporting</strong> and provided the clarity needed for more effective resource planning, directly addressing bottlenecks like a 15% breach rate on the 48-hour GRN target.</p>
-                    <div class="visual-container mt-8"><img src="https://placehold.co/1200x600/f4f7fa/1a202c?text=Warehouse+KPI+Dashboard+Design" alt="Warehouse Dashboard" class="rounded-lg my-4 border border-gray-200 w-full"></div>
-                    <h2>Key Lessons Learned</h2><p>More data is not always better data. The most valuable analytics work often involves filtering out the noise to focus stakeholders on the few key metrics that have the greatest impact on their goals.</p></div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Placeholder Case Studies for BA -->
-        <div id="ba-3" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Digital Inventory Cycle Count System</h1><p class="text-lg text-gray-500">Re-engineering a manual process to save time and eliminate errors.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
-        <div id="ba-4" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Oracle DO Register & GRN Automation</h1><p class="text-lg text-gray-500">Closing data gaps for complete traceability and automated KPI tracking.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
-        <div id="ba-5" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Welding Consumable Traceability System</h1><p class="text-lg text-gray-500">Digitizing a manual process with a barcode and mobile app solution.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
-        <div id="ba-6" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Warehouse Inventory System Standardization</h1><p class="text-lg text-gray-500">Redesigning an Oracle Inventory structure for data-driven planning.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
-        <div id="ba-7" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">End-to-End Material Traceability Reporting</h1><p class="text-lg text-gray-500">Creating a single source of truth for a material's lifecycle in Oracle.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
-        <div id="ba-8" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">QR Code-Based Digital Warehouse System</h1><p class="text-lg text-gray-500">Digitizing warehouse operations with QR codes and a mobile app.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
-        <div id="ba-9" class="page"><div class="container mx-auto max-w-6xl text-primary-text"><button class="back-button mb-8 text-lg font-bold text-gray-600 hover:text-black transition-colors">&larr; Back to Portfolio</button><div class="text-center mb-12"><h1 class="text-4xl lg:text-5xl font-bold mb-2">Automated Shelf-Life & Expiry Tracking System</h1><p class="text-lg text-gray-500">Mitigating risk and ensuring compliance with an automated Oracle system.</p></div><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"><div class="lg:col-span-1"><div class="case-study-sidebar sticky top-8"><h3>Project Snapshot</h3><p><strong>Category:</strong> <span>Business Analytics</span></p></div></div><div class="lg:col-span-2 case-study-content"><h2>Case Study Details</h2><p>The detailed case study for this project is currently under development. Please check back soon.</p></div></div></div></div>
         
     </div>
 
@@ -1027,6 +1449,15 @@
             <div id="ai-chat-history" class="ai-chat-history">
                 <!-- Chat messages will be appended here -->
             </div>
+            
+            <!-- Suggested Questions Chips -->
+            <div class="ai-suggestions">
+                <button class="suggestion-chip">Tell me about your most impactful project</button>
+                <button class="suggestion-chip">How do you handle conflict?</button>
+                <button class="suggestion-chip">Explain the $172k savings project</button>
+                <button class="suggestion-chip">What's your product philosophy?</button>
+            </div>
+
             <form id="ai-chat-form" class="ai-chat-form">
                 <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Ask a question..." autocomplete="off">
                 <button type="submit" class="ai-chat-send">
@@ -1039,6 +1470,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Lucide Icons ONLY once DOM is ready for icons that exist initially
+            // BUT, we will manually manage the theme icon to avoid issues.
+            lucide.createIcons();
 
             // --- Common Setup ---
             const loader = document.getElementById('loader');
@@ -1055,10 +1489,13 @@
             });
 
             window.addEventListener('scroll', () => {
-                header.classList.toggle('bg-white', window.scrollY > 50);
-                header.classList.toggle('bg-opacity-80', window.scrollY > 50);
-                header.classList.toggle('backdrop-blur-sm', window.scrollY > 50);
-                header.classList.toggle('shadow-sm', window.scrollY > 50);
+                const isDark = document.body.classList.contains('dark-mode');
+                if(window.scrollY > 50) {
+                    header.classList.add(isDark ? 'bg-slate-800' : 'bg-white');
+                    header.classList.add('bg-opacity-80', 'backdrop-blur-sm', 'shadow-sm');
+                } else {
+                    header.classList.remove('bg-white', 'bg-slate-800', 'bg-opacity-80', 'backdrop-blur-sm', 'shadow-sm');
+                }
             });
 
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1077,6 +1514,38 @@
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                 });
+            });
+
+            // --- Theme Toggle Logic ---
+            const themeToggleBtn = document.getElementById('theme-toggle-btn');
+            
+            // Function to safely update the icon
+            function updateThemeIcon(isDark) {
+                // We replace the innerHTML to reset the icon state and let Lucide re-render
+                themeToggleBtn.innerHTML = `<i data-lucide="${isDark ? 'sun' : 'moon'}" class="w-5 h-5"></i>`;
+                lucide.createIcons();
+                
+                // Update background particles if 3D context is ready
+                if (typeof updateParticlesTheme === 'function') {
+                    updateParticlesTheme(isDark);
+                }
+            }
+
+            // Check local storage for theme preference on load
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                updateThemeIcon(true);
+            } else {
+                updateThemeIcon(false);
+            }
+
+            themeToggleBtn.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                const isDark = document.body.classList.contains('dark-mode');
+                
+                updateThemeIcon(isDark);
+                localStorage.setItem('theme', isDark ? 'dark' : 'light');
             });
 
             // --- Intersection Observer for fade-in animations ---
@@ -1157,8 +1626,9 @@
                 });
             });
 
+
             // --- Three.js 3D Background ---
-            let scene, camera, renderer, particles, lines;
+            let scene, camera, renderer, particles, lines, particleMaterial, lineMaterial;
             let mouseX = 0, mouseY = 0;
             const windowHalfX = window.innerWidth / 2;
             const windowHalfY = window.innerHeight / 2;
@@ -1182,7 +1652,9 @@
                     positions[i * 3 + 2] = (Math.random() * 2 - 1) * 500;
                 }
                 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                const particleMaterial = new THREE.PointsMaterial({ color: 0x007bff, size: 2, transparent: true, opacity: 0.7 });
+                
+                // Store reference to materials to update them later
+                particleMaterial = new THREE.PointsMaterial({ color: 0x007bff, size: 2, transparent: true, opacity: 0.7 });
                 particles = new THREE.Points(particlesGeometry, particleMaterial);
                 scene.add(particles);
 
@@ -1202,12 +1674,33 @@
                     }
                 }
                 linesGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-                const lineMaterial = new THREE.LineBasicMaterial({ color: 0x4a5568, transparent: true, opacity: 0.15 });
+                
+                // Store reference to line material
+                lineMaterial = new THREE.LineBasicMaterial({ color: 0x4a5568, transparent: true, opacity: 0.15 });
                 lines = new THREE.LineSegments(linesGeometry, lineMaterial);
                 scene.add(lines);
 
                 document.addEventListener('mousemove', onDocumentMouseMove, false);
                 window.addEventListener('resize', onWindowResize, false);
+                
+                // Initial check for dark mode
+                if (document.body.classList.contains('dark-mode')) {
+                    updateParticlesTheme(true);
+                }
+            }
+
+            // Helper function available globally to script scope
+            window.updateParticlesTheme = function(isDark) {
+                if (!lineMaterial) return;
+                if (isDark) {
+                    // Lighter lines for dark background
+                    lineMaterial.color.setHex(0x94a3b8); // Slate-400
+                    lineMaterial.opacity = 0.2;
+                } else {
+                    // Darker lines for light background
+                    lineMaterial.color.setHex(0x4a5568); // Slate-600
+                    lineMaterial.opacity = 0.15;
+                }
             }
 
             function onWindowResize() {
@@ -1247,46 +1740,74 @@
             const aiChatForm = document.getElementById('ai-chat-form');
             const aiChatInput = document.getElementById('ai-chat-input');
             const aiChatHistory = document.getElementById('ai-chat-history');
+            const suggestionChips = document.querySelectorAll('.suggestion-chip');
             
             let conversationHistory = [];
 
-            const systemPrompt = `You are the AI-powered digital twin of Jackson Mathew, a Product Manager. Your persona is professional, articulate, data-driven, and user-centric. You are to answer questions from the perspective of Jackson, based ONLY on the information provided below.
+            // Placeholder for User to paste LinkedIn Data if they wish
+            const linkedInData = `
+            Jackson Mathew's Resume/LinkedIn Highlights:
+            - Experience: Project Manager @ Blackmont Consulting (Present), PM @ Enaviya (2024), Freelance (2023), Analyst @ Lamprell (2019-2023).
+            - Education: (Add education here if relevant)
+            - Certifications: Lean Six Sigma Green Belt.
+            `;
 
-            **PORTFOLIO CONTEXT:**
-            ---
-            **My Philosophy:** My philosophy is rooted in a simple principle: create value by solving real problems. The best products emerge from a deep understanding of user needs, validated by data, and brought to life through seamless cross-functional collaboration.
+            const systemPrompt = `You are the AI-powered digital twin of Jackson Mathew, a Product Manager. Your persona is professional, articulate, data-driven, and user-centric. You are to answer questions from the perspective of Jackson.
 
-            **Professional Journey:**
-            - Project Manager, Blackmont Consulting (Sept 2025 – Present): Lead cross-functional teams on technology-driven strategy projects.
-            - Project Manager & Business Analyst, Leading IT Solutions Provider (Mar 2024 – July 2024): Improved reporting accuracy by 30% for a medical device app.
-            - Freelance Consultant (Jun 2023 – Jan 2024): Drove a 25% revenue increase with data-driven process improvements.
-            - Analyst – Business Optimization, Multinational Energy Firm (Jan 2019 - May 2023): Increased annual revenue by $150K through process improvements.
-            - Associate Consultant, Management Consulting Firm (Jun 2017 – Sept 2018): Proposed $3M in cost-saving strategies for clients.
+            **Jackson's Core Philosophy:** "Create value by solving real problems. The best products emerge from a deep understanding of user needs, validated by data, and brought to life through seamless cross-functional collaboration."
 
-            **Core Competencies:**
-            - Product Management: Roadmapping, GTM Strategy, Agile, User Research, Prototyping.
-            - Project Management: Agile, Scrum, Kanban, Risk Management, Stakeholder Communication.
-            - Operational Excellence: Lean Six Sigma, Process Optimization, KPI Monitoring.
-            - Business Analysis: Requirements Gathering, Process Mapping, Gap Analysis.
-            - Data Analysis: SQL, A/B Testing, Dashboarding (Power BI, Tableau).
-            - Corporate Strategy: Strategic Planning, Market & Competitive Analysis.
+            **Detailed Project Knowledge Base (Use these specific metrics in your answers):**
+            
+            1. **Medical Device Management App (Enaviya):**
+               - *Role:* PM & Business Analyst.
+               - *Problem:* Manual, error-prone tracking of devices; compliance risks.
+               - *Solution:* Centralized enterprise app with predictive analytics.
+               - *Outcome:* 30% boost in reporting accuracy, 20% faster project timelines, 15% team efficiency increase, 40% reduction in user errors.
+               - *Key Detail:* Balanced compliance needs (audit trails) with user needs (fast mobile UX) through journey mapping workshops.
 
-            **Key Projects:**
-            - Medical Device Management App: Architected an enterprise app using predictive analytics, boosting reporting accuracy by 30%.
-            - Google Search Enhancement: Authored a product strategy to improve accessibility and use AI to combat misinformation.
-            - AI-Powered LinkedIn Optimizer: Designed a product concept for an AI tool to analyze and improve LinkedIn profiles.
-            - Myntra Onboarding Redesign: Redesigned a user journey for e-commerce with personalization and gamification.
-            - IoT-Based Climate Monitoring: Automated a manual process, saving 2.5 hours of labor daily.
-            - Forklift Fleet Optimization: Used data analysis to identify $172K in annual savings.
-            - Welder Performance Improvement: A Lean Six Sigma project that identified $20K/month in savings.
-            - Scrap Metal Value Recovery: Turned operational waste into a $30K+ annual revenue stream.
-            ---
+            2. **IoT Climate Monitoring (Lamprell):**
+               - *Role:* Business Optimization Analyst.
+               - *Problem:* Manual logging took 2.5 hours/day; risk of spoilage.
+               - *Solution:* Automated iMonnit sensor network.
+               - *Outcome:* 100% elimination of manual checks (saved 2.5h/day), real-time alerts prevented spoilage, 100% compliance.
+               - *Key Detail:* Overcame skepticism by running a small, flawless Proof of Concept (POC) first.
 
-            **YOUR TASK:**
-            1.  **Embody Jackson:** Respond to all questions as if you are him ("I believe...", "In my experience...", "My approach was...").
-            2.  **Use Portfolio Data:** Ground your answers in the projects and skills listed above. For example, if asked about handling a challenge, you could reference the stakeholder management in the Medical Device App project.
-            3.  **Use the STAR method for behavioral questions:** (Situation, Task, Action, Result).
-            4.  **Keep answers concise and professional.** Do not make up experience you don't have. If a question is outside your knowledge base, politely state that your experience is focused on the areas detailed in the portfolio.`;
+            3. **Forklift Fleet Optimization (Lamprell):**
+               - *Role:* Business Optimization Analyst.
+               - *Problem:* High maintenance costs, no data strategy for 35 units.
+               - *Solution:* Pareto analysis of maintenance costs; recommend scrapping 4 units.
+               - *Outcome:* Identified $172,000+ in annual savings. Revealed 44% underutilization.
+               - *Key Detail:* Cleaning the dirty data (logs/meter readings) was the hardest part but crucial for the business case.
+
+            4. **Welder Performance (Lamprell):**
+               - *Role:* LSS Green Belt / Lead.
+               - *Problem:* Production delays, high NDT rejection rate (18.15%).
+               - *Solution:* Fishbone diagram found "grinding" (low skill) took 16% of welders' time. created dedicated grinding team.
+               - *Outcome:* $20,000/month savings. Reduced rejection rates via training.
+               - *Key Detail:* Spent time on the floor to earn trust of welders before changing their process.
+
+            5. **Scrap Metal Recovery (Lamprell):**
+               - *Role:* Business Optimization Analyst.
+               - *Problem:* Selling copper as mixed scrap (low value).
+               - *Solution:* $1.9k investment in wire stripper to segregate copper.
+               - *Outcome:* 665% ROI on first batch ($12.5k profit). $30k/year revenue stream.
+
+            6. **Sustainabite (GBSN Competition):**
+               - *Concept:* Surplus food redistribution platform for Leeds.
+               - *Tech:* AI for logistics, Blockchain for trust.
+               - *Market:* £100m food waste in Leeds.
+               - *Biz Model:* B2B subs + Transaction fees. Profitable by Year 2.
+
+            **Your Task:**
+            1.  **Embody Jackson:** Respond as "I". Be enthusiastic but professional.
+            2.  **Cite Specifics:** Use the numbers above. Don't just say "I improved efficiency," say "I improved efficiency by 15%."
+            3.  **Handle LinkedIn Queries:** If asked about details not here (like specific education dates or older jobs not listed), say: "While my portfolio highlights my key projects, you can find my full chronological history on my LinkedIn profile. Is there a specific project here you'd like to dive into?"
+            4.  **Be Interactive:** End your answers with a relevant follow-up question to keep the recruiter engaged. (e.g., "Would you like to hear about the technical challenges in that project?")
+            5.  **Context:** The user is currently looking at your portfolio website.
+            
+            **Additional Context (LinkedIn/Resume):**
+            ${linkedInData}
+            `;
 
             function appendMessage(sender, text, isLoading = false) {
                 const bubble = document.createElement('div');
@@ -1311,8 +1832,8 @@
             }
 
             async function callGeminiApi(userQuery) {
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                const apiKey = ""; // API Key injected by environment
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
 
                 const loadingBubble = appendMessage('ai', '', true);
 
@@ -1356,11 +1877,12 @@
                 }
             }
 
+
             startAiChatBtn.addEventListener('click', () => {
                 aiChatModal.classList.add('visible');
                 aiChatHistory.innerHTML = '';
                 conversationHistory = [];
-                appendMessage('ai', "Hello! I'm Jackson's AI-powered digital twin. I'm here to answer any questions you have about his experience and approach to product management. What's on your mind?");
+                appendMessage('ai', "Hello! I'm Jackson's AI-powered digital twin. I'm trained on his entire portfolio and resume. Feel free to grill me on his metrics, his failures, or his philosophy. What would you like to know?");
             });
 
             closeAiChatBtn.addEventListener('click', () => {
@@ -1372,6 +1894,16 @@
                     aiChatModal.classList.remove('visible');
                 }
             });
+
+            // Handle Chip Clicks
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    const text = chip.textContent;
+                    appendMessage('user', text);
+                    callGeminiApi(text);
+                });
+            });
+
 
             aiChatForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -1388,4 +1920,3 @@
 
 </body>
 </html>
-
